@@ -87,44 +87,120 @@ INSTALLED_APPS = [
 
 > `django_extensions` is required for running custom scripts with `manage.py runscript`.
 
-## Working with Models and Data
+## How to Add New Tables (Models)
 
-### Adding new models (tables)
+To add a new table (model) to the Django backend and expose it through the API, follow these steps:
 
-1. Define your model in `events/models.py`:
+### 1. Define the model
+
+In the corresponding app folder (e.g., `backend/events/models.py`), create your model:
 
 ```python
-class Location(models.Model):
+from django.db import models
+
+class Venue(models.Model):
     name = models.CharField(max_length=100)
-    address = models.TextField()
+    location = models.TextField()
 ```
 
-2. Generate and apply migrations:
+### 2. Create a serializer
+
+In `backend/events/serializers.py`, create a serializer for the model:
+
+```python
+from rest_framework import serializers
+from .models import Venue
+
+class VenueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Venue
+        fields = '__all__'
+```
+
+### 3. Create a ViewSet
+
+In `events/views.py`, create a view for the model:
+
+```python
+from rest_framework import viewsets
+from .models import Venue
+from .serializers import VenueSerializer
+
+class VenueViewSet(viewsets.ModelViewSet):
+    queryset = Venue.objects.all()
+    serializer_class = VenueSerializer
+```
+
+### 4. Register the ViewSet in `backend/events/urls.py`
+
+Make sure the app has a `urls.py` file (create one if not) and register the view:
+
+```python
+from rest_framework.routers import DefaultRouter
+from .views import VenueViewSet
+
+router = DefaultRouter()
+router.register(r'venues', VenueViewSet)
+
+urlpatterns = router.urls
+```
+
+### 5. Include app URLs in the main `urls.py`
+
+In `backend/agendacultural/urls.py`, include the app's routes:
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('events.urls')),  # Add this line
+]
+```
+
+### 6. Create migrations and apply them
+
+Run the following commands:
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-### Populating sample data
+### 7. (Optional) Register model in the admin interface
 
-1. Create a script in `backend/scripts/load_sample_data.py`:
+In `events/admin.py`:
 
 ```python
-from events.models import Category
+from django.contrib import admin
+from .models import Venue
 
-def run():
-    for name in ["Music", "Art", "Theater", "Dance"]:
-        obj, created = Category.objects.get_or_create(name=name)
-        if created:
-            print(f"Category created: {name}")
+admin.site.register(Venue)
 ```
 
-2. Run it using:
+### 8. (Optional) Seed initial data
+
+If you want to pre-populate your table, update `backend/scripts/load_sample_data.py`:
+
+```python
+from events.models import Venue
+
+Venue.objects.get_or_create(name="National Theater", location="San José")
+```
+
+Then run:
 
 ```bash
 python manage.py runscript load_sample_data
 ```
+
+### 9. Test the endpoint
+
+Visit:
+`http://localhost:8000/api/venues/`
+
+You should see the list of records (empty if no data yet).
 
 ## Frontend Setup (Manual)
 
