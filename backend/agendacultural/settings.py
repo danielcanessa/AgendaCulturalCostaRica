@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'agendacultural.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'agenda_cultural',
+        'NAME': 'agenda_cultural_db',
         'USER': 'root',
         'PASSWORD': 'mysqlpassword',  # Set your MySQL password here
         'HOST': 'localhost',

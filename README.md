@@ -54,7 +54,7 @@ Make sure the following settings are configured correctly in `backend/agendacult
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'agenda_cultural',
+        'NAME': 'agenda_cultural_db',
         'USER': 'root',
         'PASSWORD': 'mysqlpassword',
         'HOST': 'localhost',
