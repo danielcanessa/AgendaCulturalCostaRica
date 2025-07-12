@@ -2,7 +2,6 @@
 
 echo "Setting up Django backend environment"
 
-# Check for MySQL root password
 if [ -z "$1" ]; then
   echo "Usage: $0 <mysql_root_password>"
   exit 1
@@ -10,38 +9,34 @@ fi
 
 MYSQL_ROOT_PASSWORD="$1"
 
-# Step 1: Recreate the database
-echo "📦 Recreating MySQL database"
-mysql -u root -p$MYSQL_ROOT_PASSWORD < database/schema.sql
+# 1. Drop and recreate database
+echo "⚠️  Dropping and recreating MySQL database"
+mysql -u root -p$MYSQL_ROOT_PASSWORD -e "DROP DATABASE IF EXISTS agenda_cultural_db;"
+mysql -u root -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE agenda_cultural_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
-if [ $? -ne 0 ]; then
-  echo "Failed to run schema.sql. Check MySQL credentials or permissions."
-  exit 1
-fi
-
-# Step 2: Create virtual environment if needed
-if [ ! -d "backend/env" ]; then
+# 2. Setup virtual environment
+if [ ! -d "backend/venv" ]; then
   echo "Creating virtual environment"
-  python3 -m venv backend/env
+  python3 -m venv backend/venv
 fi
 
-# Step 3: Activate virtual environment
 echo "Activating environment and installing dependencies"
-source backend/env/bin/activate
-
-# Step 4: Install dependencies
+source backend/venv/bin/activate
 pip install --upgrade pip
 pip install -r backend/requirements.txt
 
-# Step 5: Apply Django migrations
+# 3. Django migrations
 cd backend
 echo "Applying migrations"
+python manage.py makemigrations
 python manage.py migrate
 
-# Step 6: Load initial data
-echo "Loading sample data"
-python manage.py runscript load_sample_data
+# 4. Load sample data if script exists
+if [ -f "scripts/load_sample_data.py" ]; then
+  echo "Loading sample data"
+  python manage.py runscript load_sample_data
+fi
 
-# Step 7: Start the development server
+# 5. Start development server
 echo "Starting Django development server"
 python manage.py runserver

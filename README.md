@@ -13,7 +13,7 @@ This project is developed as part of the **Software Design course** at CENFOTEC,
 - Public event listings with filters
 - Accessibility metadata per event
 - User authentication and role-based permissions
-- Personalized "My Agenda" section
+- Personalized "User Events" section
 - Event comments and rating system
 - Admin interface for managing users and content
 
@@ -29,7 +29,7 @@ cd AgendaCulturalCostaRica
 
 This command will:
 
-* Recreate the MySQL database
+* Delete and create again the MySQL database
 * Set up a Python virtual environment
 * Install backend dependencies
 * Apply Django migrations
@@ -43,6 +43,10 @@ This command will:
 ```
 
 Once complete, the API will be available at [http://localhost:8000](http://localhost:8000).
+
+There are two options:
+- [http://localhost:8000/api](http://localhost:8000/api): Django REST API
+- [http://localhost:8000/admin](http://localhost:8000/admin): Django Admin interface
 
 ## Backend Configuration (Important)
 
@@ -145,7 +149,18 @@ router.register(r'venues', VenueViewSet)
 urlpatterns = router.urls
 ```
 
-### 5. Include app URLs in the main `urls.py`
+### 5. Register model in the admin interface
+
+In `events/admin.py`:
+
+```python
+from django.contrib import admin
+from .models import Venue
+
+admin.site.register(Venue)
+```
+
+### 6. (Optional)  Include app URLs in the main `urls.py`
 
 In `backend/agendacultural/urls.py`, include the app's routes:
 
@@ -155,28 +170,18 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('events.urls')),  # Add this line
+    path('api/', include('events.urls')),  
+    # Add new app URLs here
 ]
 ```
 
-### 6. Create migrations and apply them
+### 7. Create migrations and apply them
 
 Run the following commands:
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
-```
-
-### 7. (Optional) Register model in the admin interface
-
-In `events/admin.py`:
-
-```python
-from django.contrib import admin
-from .models import Venue
-
-admin.site.register(Venue)
 ```
 
 ### 8. (Optional) Seed initial data
@@ -219,4 +224,3 @@ The frontend will run at [http://localhost:3000](http://localhost:3000) and inte
 * Make sure you have MySQL installed and running.
 * Python version: 3.10 or later is recommended.
 * Node.js v18+ is recommended for the frontend.
-

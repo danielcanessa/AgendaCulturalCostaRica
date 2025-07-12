@@ -1,12 +1,12 @@
+"""
+Main URL configuration for AgendaCulturalCostaRica project.
+Includes API and admin endpoints.
+"""
+
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from events.views import CategoryViewSet
-
-router = DefaultRouter()
-router.register(r'categories', CategoryViewSet, basename='category')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    path('api/', include('events.urls')),  # All REST API endpoints for the project
 ]
