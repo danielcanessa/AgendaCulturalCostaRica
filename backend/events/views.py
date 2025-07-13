@@ -13,8 +13,7 @@ from .serializers import (
     CategorySerializer, EventSerializer, UserEventSerializer,
     AccessibilityFeatureSerializer, EventAccessibilityFeatureSerializer, CommentSerializer
 )
-
-# Each viewset below exposes the CRUD API endpoints for its corresponding model
+import os
 
 class CurrencyViewSet(viewsets.ModelViewSet):
     """API endpoint for viewing or editing Currency."""
@@ -41,10 +40,26 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+    def perform_destroy(self, instance):
+        """
+        Delete associated image file on disk when deleting Category instance.
+        """
+        if instance.image_path and os.path.exists(instance.image_path):
+            os.remove(instance.image_path)
+        instance.delete()
+
 class EventViewSet(viewsets.ModelViewSet):
     """API endpoint for viewing or editing Event."""
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+    def perform_destroy(self, instance):
+        """
+        Delete associated banner image file on disk when deleting Event instance.
+        """
+        if instance.event_banner_path and os.path.exists(instance.event_banner_path):
+            os.remove(instance.event_banner_path)
+        instance.delete()
 
 class UserEventViewSet(viewsets.ModelViewSet):
     """API endpoint for viewing or editing UserEvent."""
@@ -65,3 +80,11 @@ class CommentViewSet(viewsets.ModelViewSet):
     """API endpoint for viewing or editing Comment."""
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    def perform_destroy(self, instance):
+        """
+        Delete associated image file on disk when deleting Comment instance.
+        """
+        if instance.image_path and os.path.exists(instance.image_path):
+            os.remove(instance.image_path)
+        instance.delete()

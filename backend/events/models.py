@@ -16,7 +16,7 @@ class Currency(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return f"Currency(id={self.id}, name={self.name})"
 
 class UserRole(models.Model):
     """
@@ -34,7 +34,7 @@ class UserRole(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return f"UserRole(id={self.id}, name={self.name})"
 
 class Organization(models.Model):
     """
@@ -58,7 +58,7 @@ class Organization(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return f"Organization(id={self.id}, name={self.name})"
 
 class User(models.Model):
     """
@@ -68,7 +68,7 @@ class User(models.Model):
     name = models.CharField(
         max_length=100,
         null=True, blank=True,
-        help_text="User's first name."
+        help_text="User's name."
     )
     last_name = models.CharField(
         max_length=100,
@@ -82,7 +82,7 @@ class User(models.Model):
     )
     password_hash = models.CharField(
         max_length=100,
-        help_text="Hashed user password (never store plaintext)."
+        help_text="Hashed user password."
     )
     phone = models.CharField(
         max_length=30,
@@ -95,7 +95,7 @@ class User(models.Model):
     )
     is_event_organizer = models.BooleanField(
         null=True, blank=True,
-        help_text="True if the user can create events."
+        help_text="True if the user has created events that have been published."
     )
     role = models.ForeignKey(
         UserRole, on_delete=models.PROTECT,
@@ -115,9 +115,13 @@ class User(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name or ''} {self.last_name or ''} <{self.email}>"
+        return f"User(id={self.id}, name={self.name or ''} {self.last_name or ''}, email={self.email})"
 
 class Category(models.Model):
+    """
+    Represents an event category (e.g., Music, Art, Sports).
+    Used to classify events and optionally store an icon/image.
+    """
     name = models.CharField(
         max_length=100,
         unique=True,
@@ -125,17 +129,18 @@ class Category(models.Model):
     )
     description = models.CharField(
         max_length=255,
-        help_text="Short description of the category.",
-        default="No description"
+        null=True,
+        help_text="Short description of the category."
     )
-    image = models.BinaryField(
-        null=True, blank=True,
-        help_text="Category icon or image (optional). Use ImageField for file storage."
+    image_path = models.CharField(
+        max_length=255,
+        null=True, 
+        help_text="Path to the category icon or image (optional). Use ImageField for file storage."
     )
 
     def __str__(self):
-        return self.name
-
+        return f"Category(id={self.id}, name={self.name})"
+    
 class Event(models.Model):
     """
     Main event model.
@@ -162,6 +167,7 @@ class Event(models.Model):
     )
     currency = models.ForeignKey(
         Currency, on_delete=models.PROTECT,
+        null=True,
         help_text="Currency for event price."
     )
     ticket_link = models.CharField(
@@ -188,10 +194,6 @@ class Event(models.Model):
         null=True, blank=True,
         help_text="Google Maps URL or coordinates (optional)."
     )
-    event_banner = models.BinaryField(
-        null=True, blank=True,
-        help_text="Banner image (optional). Use ImageField for uploads."
-    )
     created_by = models.ForeignKey(
         'User', on_delete=models.PROTECT, related_name='created_events',
         help_text="User who created the event."
@@ -216,6 +218,7 @@ class Event(models.Model):
     )
     approved_by = models.ForeignKey(
         'User', on_delete=models.PROTECT, related_name='approved_events',
+        null=True,
         help_text="Admin user who approved the event."
     )
     created_at = models.DateTimeField(
@@ -230,10 +233,20 @@ class Event(models.Model):
         Category, on_delete=models.PROTECT,
         help_text="Event category."
     )
+    event_banner_path = models.CharField(
+        max_length=255,
+        null=True, blank=True,
+        help_text="Path to the event banner image (optional)."
+    )
 
     def __str__(self):
-        return f"{self.name} ({self.start_datetime:%Y-%m-%d})"
-
+        fields = [
+            f"id={self.id}",
+            f"name={self.name}",        
+            f"category={self.category}",
+        ]
+        return "Event(" + ", ".join(fields) + ")"
+    
 class UserEvent(models.Model):
     """
     Associates users with events they have bookmarked ("My Agenda").
@@ -252,7 +265,7 @@ class UserEvent(models.Model):
         unique_together = ('event', 'user')  # Ensures a user can't bookmark the same event more than once
 
     def __str__(self):
-        return f"{self.user} <-> {self.event}"
+        return f"UserEvent(id={self.id}, user={self.user}, event={self.event})"
 
 class AccessibilityFeature(models.Model):
     """
@@ -262,7 +275,6 @@ class AccessibilityFeature(models.Model):
     name = models.CharField(
         max_length=100,
         unique=True,
-        null=True, blank=True,
         help_text="Feature name (unique, e.g., Wheelchair access)."
     )
     description = models.CharField(
@@ -270,13 +282,8 @@ class AccessibilityFeature(models.Model):
         null=True, blank=True,
         help_text="Feature description."
     )
-    image = models.BinaryField(
-        null=True, blank=True,
-        help_text="Optional icon/image. Use ImageField for uploads."
-    )
-
     def __str__(self):
-        return self.name or "AccessibilityFeature"
+        return f"AccessibilityFeature(id={self.id}, name={self.name or 'AccessibilityFeature'})"
 
 class EventAccessibilityFeature(models.Model):
     """
@@ -296,17 +303,13 @@ class EventAccessibilityFeature(models.Model):
         unique_together = ('event', 'accessibility_feature')  # Only one record per event-feature pair
 
     def __str__(self):
-        return f"{self.event} - {self.accessibility_feature}"
+        return f"EventAccessibilityFeature(id={self.id}, event={self.event}, feature={self.accessibility_feature})"
 
 class Comment(models.Model):
     """
     Stores comments made by users on events.
     Can include an optional image (e.g., ticket proof, selfie at event).
     """
-    image = models.BinaryField(
-        null=True, blank=True,
-        help_text="Optional image. Use ImageField for user uploads."
-    )
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
         help_text="User who made the comment."
@@ -326,6 +329,11 @@ class Comment(models.Model):
         auto_now=True, null=True,
         help_text="Last update timestamp."
     )
+    image_path = models.CharField(
+        max_length=255,
+        null=True, blank=True,
+        help_text="Path to the comment image (optional)."
+    )
 
     def __str__(self):
-        return f"Comment by {self.user} on {self.event}"
+        return f"Comment(id={self.id}, user={self.user}, event={self.event})"

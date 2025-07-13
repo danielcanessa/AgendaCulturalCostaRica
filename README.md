@@ -33,7 +33,6 @@ This command will:
 * Set up a Python virtual environment
 * Install backend dependencies
 * Apply Django migrations
-* Load sample data
 * Start the Django development server
 
 > Replace `mysqlpassword` with your actual MySQL root password.
@@ -47,6 +46,16 @@ Once complete, the API will be available at [http://localhost:8000](http://local
 There are two options:
 - [http://localhost:8000/api](http://localhost:8000/api): Django REST API
 - [http://localhost:8000/admin](http://localhost:8000/admin): Django Admin interface
+
+### 3. Load sample data (optional)
+If you want to pre-populate the database with sample data, run:
+
+```bash
+bash scripts/load_sample_data_rest.sh
+```
+
+This script will use the Django REST API to create some initial events, venues, and other data to test the application.
+**Note**: Make sure the backend server is running before executing this script.
 
 ## Backend Configuration (Important)
 

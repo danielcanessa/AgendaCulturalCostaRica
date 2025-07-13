@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e  # Exit immediately if a command exits with a non-zero status
+set -x  # Shows commands being executed
+
 echo "Setting up Django backend environment"
 
 if [ -z "$1" ]; then
@@ -10,7 +13,7 @@ fi
 MYSQL_ROOT_PASSWORD="$1"
 
 # 1. Drop and recreate database
-echo "⚠️  Dropping and recreating MySQL database"
+echo "Dropping and recreating MySQL database"
 mysql -u root -p$MYSQL_ROOT_PASSWORD -e "DROP DATABASE IF EXISTS agenda_cultural_db;"
 mysql -u root -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE agenda_cultural_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
@@ -31,12 +34,13 @@ echo "Applying migrations"
 python manage.py makemigrations
 python manage.py migrate
 
-# 4. Load sample data if script exists
-if [ -f "scripts/load_sample_data.py" ]; then
-  echo "Loading sample data"
-  python manage.py runscript load_sample_data
-fi
+## Load sample data using Django management command (uncomment if needed)
+## if [ -f "scripts/load_sample_data_db.py" ]; then
+##   echo "Loading sample data"
+##   python manage.py runscript load_sample_data_db
+## fi
 
-# 5. Start development server
+# 4. Start development server (before populating data)
 echo "Starting Django development server"
-python manage.py runserver
+python manage.py runserver &
+sleep 5  # espera unos segundos a que inicie
