@@ -1,0 +1,61 @@
+.update-perfil-page {
+    background-color: #f2f2f2;
+    min-height: 70vh;
+    padding: 50px 30px;
+}
+
+.update-container {
+    display: flex;
+    background-color: white;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    max-width: 1000px;
+    margin: auto;
+}
+
+.update-form {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.update-form label {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #0C2849;
+}
+
+.update-form input,
+.update-form textarea {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.update-form textarea {
+    resize: vertical;
+}
+
+.update-imagen {
+    flex: 1;
+    position: relative;
+}
+
+.update-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.text-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 0px;
+    color: white;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+.text-overlay h2 {
+    color: #ff6600;
+}

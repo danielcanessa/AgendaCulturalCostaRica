@@ -17,6 +17,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 10px 10px 10px #999999;
+  cursor: pointer;
 }
 
 .icono {
