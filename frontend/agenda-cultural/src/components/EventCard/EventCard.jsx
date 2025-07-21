@@ -1,10 +1,19 @@
 import './EventCard.css';
-import eventoImg from '../../assets/cardEvent.png'; 
+import { useNavigate } from 'react-router-dom';
 
-export default function EventCard({titulo,fecha,lugar}) {
+
+export default function EventCard({id,titulo,fecha,lugar,imagen}) {
+  const navigate = useNavigate();
+  let imagenEvento;
+
+  try {
+    imagenEvento = require(`../../assets/imgEvents/${imagen}`);
+  } catch {
+    imagenEvento = require('../../assets/cardEvent.png'); // Por defecto la generica
+  }
   return (
     <div className="event-card">
-      <img src={eventoImg} alt="Event" />
+      <img src={imagenEvento} alt={`Evento ${titulo}`} />
       <div className="info">
         <div className='info-text'>
           <h4>{titulo}</h4>
@@ -12,7 +21,7 @@ export default function EventCard({titulo,fecha,lugar}) {
           <p>{lugar}</p>
           
         </div>
-        <button>Ver más</button>
+        <button  onClick={() => navigate(`/event/${id}`)}>Ver más</button>
       </div>
     </div>
   );

@@ -3,30 +3,32 @@ import CategoryList from '../../components/CategoryList/CategoryList';
 import EventCard from '../../components/EventCard/EventCard';
 import Footer from '../../components/Footer/Footer';
 import './Home.css';
+import { getUsuarioActual } from '../../utils/getUsuarioActual';
+import eventos from '../../data/eventos';
+import { useState } from 'react';
 
-//Simulación obtención de datos de la base de datos
-const eventos=[{
-  nombre:"Música al Atardecer: “Jazz Meets the Great American Songbook",
-  fecha:"12 de febrero",
-  lugar:"Parque Viva - San José"
-},
-{nombre:"Música para oboe de compositoras/es costarricenses",
-  fecha:"30 de octubre",
-  lugar:"Campus Rodrigo Facio, San Pedro - San José"
-},
-{nombre:"Paradojas. Colectiva",
-  fecha:"25 de agosto",
-  lugar:"Museo Rafael A. Calderón Guardia - San José"
-},
-{nombre:"Paisajes místicos. Daniela Ávalos",
-  fecha:"30 de marzo",
-  lugar:"Galería Talentum - San José"
-}]
 export default function Home() {
+  const { tipoUsuario, nombre } = getUsuarioActual();
 
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+  const [busqueda, setBusqueda] = useState('');
+
+  //FILTRANDO CON las categorías y por nombre del evento 
+  const eventosFiltrados = eventos.filter(ev => {
+  const coincideCategoria =
+    !categoriaSeleccionada || categoriaSeleccionada === 'Todos'
+      ? true
+      : ev.categoria === categoriaSeleccionada;
+
+    const coincideBusqueda = ev.nombre.toLowerCase().includes(busqueda.toLowerCase());
+
+    return coincideCategoria && coincideBusqueda;
+  });
+  
+  
   return (
     <>
-      <Header />
+      <Header tipoUsuario={tipoUsuario} nombre={nombre} />
       <main className="home">
         <section className="banner">
           <div className="overlay">
@@ -37,21 +39,36 @@ export default function Home() {
 
         <section className="categorias">
           <h1 className='title'>Categorías</h1>
-          <CategoryList />
+          <CategoryList onCategoriaSeleccionada={setCategoriaSeleccionada} />
         </section>
 
         <section className="events">
           <div className='container-events'>
             <h3 className='event-Title'>Eventos</h3>
             <div className='search'>
-              <i class='bx  bx-search'></i> 
-              <input type="text" placeholder="Buscar..." className="search-input" />
+              <i className='bx  bx-search'></i> 
+
+              <input
+                type="text"
+                placeholder="Buscar por nombre..."
+                className="search-input"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+              />
             </div>
           </div>
+
           
           <div className="events-grid">
-            {eventos.map((event, index) => (
-              <EventCard key={index} titulo={event.nombre} fecha={event.fecha} lugar={event.lugar} />
+            {eventosFiltrados.map((event, index) => (
+              <EventCard
+                key={event.id}
+                id={event.id}
+                titulo={event.nombre}
+                fecha={event.fecha}
+                lugar={event.direccion}
+                imagen={event.imagen}
+              />
             ))}
           </div>
         </section>
