@@ -15,6 +15,15 @@ from .serializers import (
 )
 import os
 
+class DeleteFileHelperMixin:
+    """
+    Provides a method to delete a file from disk.
+    Intended to be used as a helper from your ViewSet.
+    """
+    def _delete_file(self, file_path):
+        if file_path and os.path.exists(file_path):
+            os.remove(file_path)
+
 class CurrencyViewSet(viewsets.ModelViewSet):
     """API endpoint for viewing or editing Currency."""
     queryset = Currency.objects.all()
@@ -44,8 +53,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         """
         Delete associated image file on disk when deleting Category instance.
         """
-        if instance.image_path and os.path.exists(instance.image_path):
-            os.remove(instance.image_path)
+        self._delete_file(instance.image_path)
         instance.delete()
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -57,8 +65,7 @@ class EventViewSet(viewsets.ModelViewSet):
         """
         Delete associated banner image file on disk when deleting Event instance.
         """
-        if instance.event_banner_path and os.path.exists(instance.event_banner_path):
-            os.remove(instance.event_banner_path)
+        self._delete_file(instance.event_banner_path)
         instance.delete()
 
 class UserEventViewSet(viewsets.ModelViewSet):
@@ -85,6 +92,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         """
         Delete associated image file on disk when deleting Comment instance.
         """
-        if instance.image_path and os.path.exists(instance.image_path):
-            os.remove(instance.image_path)
+        self._delete_file(instance.image_path)
         instance.delete()
+        
