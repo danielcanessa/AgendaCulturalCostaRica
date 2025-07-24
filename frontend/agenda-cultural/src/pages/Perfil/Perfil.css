@@ -1,0 +1,160 @@
+.perfil-page {
+  background-color: #f2f2f2;
+  padding: 30px;
+  min-height: 100vh;
+}
+
+.perfil-info,
+.perfil-eventos{
+  max-width: 800px;
+  margin: auto;
+}
+
+.perfil-info {
+  background: white;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+.perfil-info h2 {
+  color: #d54b00;
+  margin-bottom: 20px;
+}
+
+.perfil-info p {
+  margin-bottom: 8px;
+}
+
+.organizador {
+  margin-top: 20px;
+}
+
+.organizador input {
+  margin-right: 8px;
+}
+
+.organizador p{
+    color: #ccc;
+    margin-top: -3px;
+}
+
+.perfil-botones {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.btn-actualizar,
+.btn-eliminar {
+  padding: 10px 20px;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-actualizar:hover{
+    background-color: #d54b00;
+}
+
+.btn-eliminar:hover{
+    background-color: #d32e09;  
+}
+.btn-actualizar {
+    background-color: #e26b1a;
+}
+
+.btn-eliminar {
+    background-color: #b94025;
+}
+
+.perfil-eventos {
+    background: white;
+    padding: 30px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.perfil-eventos h3 {
+    color: #d54b00;
+    margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+
+
+/*Botones de acciónes*/
+.celda-acciones {
+  position: relative;
+}
+
+.acciones-container {
+  position: relative;
+}
+
+.btn-acciones {
+  background-color: #d54b00;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.acciones-dropdown {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+}
+
+.acciones-dropdown button {
+  padding: 8px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.acciones-dropdown .btn-ver {
+  background-color: #4caf50;
+}
+.acciones-dropdown .btn-modificar {
+  background-color: #ff9800;
+}
+.acciones-dropdown .btn-eliminar {
+  background-color: #f44336;
+}
+.acciones-dropdown .btn-eliminar:hover{
+    background-color: #d32e09;
+}
+.acciones-dropdown .btn-ver:hover {
+  background-color: #337735;
+}
+.acciones-dropdown .btn-modificar:hover {
+  background-color: #b86f02;
+}
+
+@media(min-width:1400px){
+    .acciones-dropdown {
+        top: 35px;
+        right: 120px;
+    }
+}

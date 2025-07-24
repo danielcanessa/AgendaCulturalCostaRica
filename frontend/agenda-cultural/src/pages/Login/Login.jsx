@@ -1,12 +1,43 @@
 import './Login.css';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
-import bannerImg from '../../assets/banner.jpg'; 
+import bannerImg from '../../assets/banner.jpg';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+
+//Simulación de base de datos
+const usuarios = [
+  { usuario: 'shirley', password: '1234', nombre: 'Shirley Brenes', rol: 'usuario' },
+  { usuario: 'admin', password: 'admin123', nombre: 'María Garro', rol: 'admin' }
+];
 
 export default function Login() {
+  const [usuario, setUsuario] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const manejarLogin = (e) => {
+    e.preventDefault();
+
+    const encontrado = usuarios.find(
+      u => u.usuario === usuario && u.password === password
+    );
+
+    if (encontrado) {
+      localStorage.setItem('usuario', JSON.stringify({
+        nombre: encontrado.nombre,
+        rol: encontrado.rol
+      }));
+      navigate('/');
+    } else {
+      alert('Credenciales incorrectas');
+    }
+  };
+
   return (
     <>
-    <Header/>
+      <Header tipoUsuario="visitante" />
       <main className="login-page">
         <div className="login-container">
           <div className="login-image">
@@ -17,18 +48,28 @@ export default function Login() {
             </div>
           </div>
 
-          <form className="login-form">
+          <form className="login-form" onSubmit={manejarLogin}>
             <label>Usuario:</label>
-            <input type="text" placeholder="Ingrese su usuario" />
+            <input
+              type="text"
+              placeholder="Ingrese su usuario"
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
+            />
 
             <label>Contraseña:</label>
-            <input type="password" placeholder="Ingrese su contraseña" />
+            <input
+              type="password"
+              placeholder="Ingrese su contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
             <div className='button-section'>
-                <input className="button" type="submit" value="Iniciar sesión"></input>
+              <input className="button" type="submit" value="Iniciar sesión" />
             </div>
-            
-            <a href="">Recuperar contraseña</a> 
+
+            <a href="#">Recuperar contraseña</a>
           </form>
         </div>
       </main>

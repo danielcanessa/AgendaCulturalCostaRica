@@ -1,0 +1,90 @@
+.create-event-container {
+  padding: 20px;
+  background-color: #e9e9e9;
+}
+
+.createvent-page{
+    background-color: #f2f2f2;
+    padding: 30px;
+    border-radius: 5px;
+    max-width: 800px;
+    margin: auto;
+ 
+}
+
+
+
+.titulo-form {
+  color: #d14400;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+label{
+    color: #0C2849;
+    font-weight: bold;
+}
+
+.form-evento {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-evento input,
+.form-evento textarea,
+.form-evento select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.form-evento input[type="datetime-local"]{
+    width: 50%;
+}
+
+
+.accesibilidad-options {
+  display: flex;
+  gap: 15px;
+  margin-left: 100px;
+}
+
+.accesibilidad-options label{
+    font-weight:400;
+    color: black;
+}
+
+.mapa-creacion {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.btn-subir-img,
+.btn-crear-evento {
+  padding: 10px;
+  background-color: #d14400;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-subir-img:hover,
+.btn-crear-evento:hover {
+  background-color: #a83800;
+}
+
+.preview-container {
+  margin-top: 10px;
+}
+
+.preview-img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
