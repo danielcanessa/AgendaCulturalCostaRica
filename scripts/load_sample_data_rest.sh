@@ -37,7 +37,7 @@ json_admin_user=$(jq -n \
   --arg name "Ana" \
   --arg last_name "Gómez" \
   --arg email "admin@agendacultural.cr" \
-  --arg password_hash "hashadmin123" \
+  --arg password "hashadmin123" \
   --argjson role $ADMIN_ROLE_ID \
   --argjson organization $ORG_CENFOTEC_ID \
   --argjson is_event_organizer false \
@@ -45,7 +45,7 @@ json_admin_user=$(jq -n \
     name: $name,
     last_name: $last_name,
     email: $email,
-    password_hash: $password_hash,
+    password: $password,
     role: $role,
     organization: $organization,
     is_event_organizer: $is_event_organizer
@@ -57,7 +57,7 @@ json_visitor_user=$(jq -n \
   --arg name "Luis" \
   --arg last_name "Pérez" \
   --arg email "visitante@agendacultural.cr" \
-  --arg password_hash "hashvisitante123" \
+  --arg password "hashvisitante123" \
   --argjson role $VISITOR_ROLE_ID \
   --argjson organization $ORG_MUSEO_ID \
   --argjson is_event_organizer true \
@@ -65,7 +65,7 @@ json_visitor_user=$(jq -n \
     name: $name,
     last_name: $last_name,
     email: $email,
-    password_hash: $password_hash,
+    password: $password,
     role: $role,
     organization: $organization,
     is_event_organizer: $is_event_organizer
@@ -77,7 +77,7 @@ json_visitor_user2=$(jq -n \
   --arg name "María" \
   --arg last_name "Fernández" \
   --arg email "visitante2@agendacultural.cr" \
-  --arg password_hash "hashvisitante456" \
+  --arg password "hashvisitante456" \
   --argjson role $VISITOR_ROLE_ID \
   --argjson organization $ORG_MUSEO_ID \
   --argjson is_event_organizer true \
@@ -85,7 +85,7 @@ json_visitor_user2=$(jq -n \
     name: $name,
     last_name: $last_name,
     email: $email,
-    password_hash: $password_hash,
+    password: $password,
     role: $role,
     organization: $organization,
     is_event_organizer: $is_event_organizer
@@ -139,6 +139,11 @@ CRC_ID=$(post_and_get_id "currencies" "$json_crc")
 echo "ID CRC: $CRC_ID"
 
 echo "Creando eventos..."
+
+echo "VISITOR_USER_ID: $VISITOR_USER_ID"
+echo "ADMIN_USER_ID: $ADMIN_USER_ID"
+echo "MUSIC_CAT_ID: $MUSIC_CAT_ID"
+echo "CRC_ID: $CRC_ID"
 
 
 # Placeholder de base64 para banner

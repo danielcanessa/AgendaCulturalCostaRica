@@ -5,12 +5,23 @@ Serializers convert model instances to JSON for the API and validate input data.
 
 from rest_framework import serializers
 from .models import (
-    Currency, UserRole, Organization, User, Category, Event,
-    UserEvent, AccessibilityFeature, EventAccessibilityFeature, Comment
+    Currency, 
+    UserRole, 
+    Organization, 
+    User, 
+    Category, 
+    Event,
+    UserEvent, 
+    AccessibilityFeature, 
+    EventAccessibilityFeature, 
+    Comment
 )
 import os
 import uuid
 import base64
+from django.contrib.auth.hashers import (
+    make_password
+)
 
 class Base64ImageHelperMixin:
     """
@@ -64,9 +75,29 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for User model."""
+    
+    # Custom field to handle password hashing
+    password = serializers.CharField(write_only=True, required=True)
+
     class Meta:
         model = User
         fields = '__all__'
+        extra_kwargs = {
+            'password_hash': {'required': False, 'write_only': True}  # Ensure it's excluded from GET responses
+        }
+    
+    def create(self, validated_data):
+        # Get the password from validated_data, hash it and remove it from the validated_data
+        password = validated_data.pop('password')
+        validated_data['password_hash'] = make_password(password)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        # If password is provided, hash it and remove from validated_data
+        if 'password' in validated_data:
+            password = validated_data.pop('password')
+            validated_data['password_hash'] = make_password(password)
+        return super().update(instance, validated_data)
 
 class CategorySerializer(Base64ImageHelperMixin, serializers.ModelSerializer):
     """

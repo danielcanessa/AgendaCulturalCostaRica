@@ -3,6 +3,14 @@
 set -e  # Exit immediately if a command exits with a non-zero status
 set -x  # Shows commands being executed
 
+# Free port 8000 if already in use
+# PORT=8000
+# PID=$(lsof -ti tcp:$PORT)
+# if [ -n "$PID" ]; then
+#   echo "Killing process on port $PORT (PID $PID)"
+#   kill -9 $PID
+# fi
+
 echo "Setting up Django backend environment"
 
 if [ -z "$1" ]; then
@@ -42,5 +50,4 @@ python manage.py migrate
 
 # 4. Start development server (before populating data)
 echo "Starting Django development server"
-python manage.py runserver &
-sleep 5  # espera unos segundos a que inicie
+exec python manage.py runserver
