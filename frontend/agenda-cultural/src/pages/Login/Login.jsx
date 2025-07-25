@@ -4,13 +4,11 @@ import Footer from '../../components/Footer/Footer';
 import bannerImg from '../../assets/banner.jpg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import login from '../../data/login'
 
 
 //Simulación de base de datos
-const usuarios = [
-  { usuario: 'shirley', password: '1234', nombre: 'Shirley Brenes', rol: 'usuario' },
-  { usuario: 'admin', password: 'admin123', nombre: 'María Garro', rol: 'admin' }
-];
+const usuarios = login
 
 export default function Login() {
   const [usuario, setUsuario] = useState('');
@@ -27,7 +25,8 @@ export default function Login() {
     if (encontrado) {
       localStorage.setItem('usuario', JSON.stringify({
         nombre: encontrado.nombre,
-        rol: encontrado.rol
+        rol: encontrado.rol,
+        correo: encontrado.correo
       }));
       navigate('/');
     } else {

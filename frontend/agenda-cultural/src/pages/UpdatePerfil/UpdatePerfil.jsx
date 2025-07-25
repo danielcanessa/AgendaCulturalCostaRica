@@ -4,16 +4,20 @@ import Footer from '../../components/Footer/Footer';
 import bannerImg from '../../assets/banner.jpg';
 import { getUsuarioActual } from '../../utils/getUsuarioActual';
 import { useState } from 'react';
+import usuarios from '../../data/usuarios';
 
 export default function UpdatePerfil() {
-  const { tipoUsuario, nombre } = getUsuarioActual();
+  const { tipoUsuario, nombre, correo} = getUsuarioActual();
+
+  const usuario = usuarios.find(u => u.correo === correo) || {};
+
 
   //Aqui se cambia la información extraida del usuario correspondiente
   const [formulario, setFormulario] = useState({
-    nombre: 'Shirley',
-    apellidos: 'Brenes',
-    telefono: '(506) 7894 6512',
-    biografia: 'Biografía escrita por el usuario.',
+    nombre: usuario.nombre,
+    apellidos: usuario.apellidos,
+    telefono: usuario.telefono,
+    biografia: usuario.biografia,
     contraseña: ''
   });
 

@@ -19,7 +19,8 @@ const eventos = [
       { autor: 'Shirley Brenes', texto: 'Muy interesante.', estrellas: 5 }
     ],
     imagen: 'event1.jpeg',
-    categoria: 'Arte'
+    categoria: 'Arte',
+    estado: 'Pendiente'
      
   },
   {
@@ -41,12 +42,13 @@ const eventos = [
       { autor: 'Luis Vargas', texto: 'Excelente ambiente.', estrellas: 5 }
     ],
     imagen: 'event2.jpg',
-    categoria: 'Música'
+    categoria: 'Música',
+    estado: 'Pendiente'
   },
   {
     id: 3,
     nombre: 'Taller de Fotografía Urbana',
-    correoAutor:'',
+    correoAutor:'steph@gmail.com',
     categoria: 'Taller',
     fecha: 'Viernes 15 de septiembre',
     inicio: 'Viernes 15 de septiembre - 10:00 a.m.',
@@ -62,7 +64,8 @@ const eventos = [
       { autor: 'Ana Morales', texto: 'Muy útil para principiantes.', estrellas: 4 }
     ],
     imagen: 'event3.jpg',
-    categoria: 'Arte'
+    categoria: 'Arte',
+    estado: 'Publicado'
   },
   {
     id: 4,
@@ -83,7 +86,8 @@ const eventos = [
       { autor: 'Carlos Rojas', texto: 'Arte impresionante.', estrellas: 5 }
     ],
     imagen: 'event4.jpg',
-    categoria: 'Arte'
+    categoria: 'Arte',
+    estado: 'Publicado'
   },
   {
     id: 5,
@@ -104,7 +108,8 @@ const eventos = [
       { autor: 'Lucía Navarro', texto: 'Excelente actuación y escenografía.', estrellas: 5 }
     ],
     imagen: 'event5.jpg',
-    categoria: 'Teatro'
+    categoria: 'Teatro',
+    estado: 'Publicado'
   }
 ];
 

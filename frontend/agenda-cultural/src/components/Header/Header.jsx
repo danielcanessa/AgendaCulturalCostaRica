@@ -4,7 +4,7 @@ import user from '../../assets/user.png'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 
-export default function Header({ tipoUsuario = 'visitante', nombre = 'Usuario' }) {
+export default function Header({ tipoUsuario = 'visitante', nombre = 'Usuario', correo = ''}) {
   const navigate = useNavigate();
   const [menuAbierto, setMenuAbierto] = useState(false);
 
@@ -43,8 +43,8 @@ export default function Header({ tipoUsuario = 'visitante', nombre = 'Usuario' }
             <span>{nombre}</span>
             {menuAbierto && (
               <div className="dropdown">
-                <button  onClick={() => navigate('/perfil')}>Mi Perfil</button>
-                <button onClick={() => navigate('/agenda')}>Mi Agenda</button>
+               <button onClick={() => navigate(`/perfil/${correo}`)}>Mi Perfil</button>
+                <button onClick={() => navigate('/mi-agenda')}>Mi Agenda</button>
                 <button onClick={cerrarSesion}>Cerrar sesión</button>
               </div>
             )}
