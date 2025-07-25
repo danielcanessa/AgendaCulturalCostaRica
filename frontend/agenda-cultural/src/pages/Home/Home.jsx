@@ -60,7 +60,10 @@ export default function Home() {
 
           
           <div className="events-grid">
-            {eventosFiltrados.map((event, index) => (
+            {eventosFiltrados.filter(ev => ev.estado?.toLowerCase() === 'publicado').length > 0 ? (
+            eventosFiltrados
+              .filter(ev => ev.estado?.toLowerCase() === 'publicado')
+              .map((event) => (
               <EventCard
                 key={event.id}
                 id={event.id}
@@ -69,7 +72,10 @@ export default function Home() {
                 lugar={event.direccion}
                 imagen={event.imagen}
               />
-            ))}
+            ))
+            ) : (
+              <p className='error-msj'>No hay eventos publicados.</p>
+            )}
           </div>
         </section>
       </main>

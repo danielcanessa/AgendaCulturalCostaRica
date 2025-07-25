@@ -1,21 +1,25 @@
+
 import './Event.css';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import { getUsuarioActual } from '../../utils/getUsuarioActual';
-import mapaImg from '../../assets/banner.jpg'; // Reemplazar por el mapa real
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import eventos from '../../data/eventos';
-
 import { useState } from 'react';
 
 export default function Event() {
+  const { tipoUsuario, nombre, correo } = getUsuarioActual();
+  const [searchParams] = useSearchParams();
+  const modo = searchParams.get("modo");
+  const mostrarSolicitudCambios = tipoUsuario?.toLowerCase() === "admin" && modo === "solicitar-cambios";
 
-    //Esto lo necesitamos para la estrella
   const [estrellasSeleccionadas, setEstrellasSeleccionadas] = useState(0);
 
   const { id } = useParams();
   const evento = eventos.find(e => e.id === parseInt(id));
-  const { tipoUsuario, nombre } = getUsuarioActual();
+  const navigate = useNavigate();
+
+  const esAutor = correo === evento?.correoAutor;
 
   if (!evento) {
     return (
@@ -31,15 +35,12 @@ export default function Event() {
 
   let imagenEvento = require(`../../assets/imgEvents/${evento.imagen}`);
 
-  
-
-
   return (
     <>
       <Header tipoUsuario={tipoUsuario} nombre={nombre} />
       <main className="event-page">
         <div className='event-banner'>
-             <img className='banner' src={imagenEvento} alt={`Evento ${evento.nombre}`} />
+          <img className='banner' src={imagenEvento} alt={`Evento ${evento.nombre}`} />
         </div>
 
         <section className="event-detalle">
@@ -55,7 +56,7 @@ export default function Event() {
           <p><strong>Correo:</strong> {evento.correo}</p>
           <p><strong>Accesibilidad:</strong> {evento.accesibilidad}</p>
           <p><strong>Dirección:</strong> {evento.direccion}</p>
-          
+
           <iframe
             className="mapa"
             title="Ubicación del evento"
@@ -67,10 +68,29 @@ export default function Event() {
           {tipoUsuario === 'usuario' && (
             <div className="botones-event">
               <button className="btn-agenda">Añadir a mi agenda</button>
-              <button className="btn-editar">Editar evento</button>
+              {esAutor && (
+                <button
+                  className="btn-editar"
+                  onClick={() => navigate(`/editar-evento/${evento.id}`)}
+                >
+                  Editar evento
+                </button>
+              )}
+            </div>
+          )}
+
+          {mostrarSolicitudCambios && (
+            <div className="solicitud-cambios">
+              <h3>Solicitud de cambios o razón por la cuál se elimina el evento</h3>
+              <textarea placeholder="Escriba los cambios o el motivo de eliminación del evento" rows="4"></textarea>
+              <div className="botones-event">
+                <button className="btn-editar">Solicitar Cambios</button>
+                <button className="btn-eliminar">Eliminar Evento</button>
+              </div>
             </div>
           )}
         </section>
+
         <section className="comentarios">
           <h3>Comentarios</h3>
           {evento.comentarios.map((c, i) => (
@@ -80,27 +100,26 @@ export default function Event() {
               <p>{'⭐'.repeat(c.estrellas)} {c.estrellas} estrellas</p>
             </div>
           ))}
-          
+
           {tipoUsuario === 'usuario' && (
             <form className="form-comentario">
-                <h3>Añadir comentario sobre el evento</h3>
-                <label>¿Qué opinás de este evento?</label>
-                <textarea placeholder="Escribí tu comentario aquí." rows={3}></textarea>
-                <div className="rating-stars">
-                    <label>¿Cuántas estrellas le das?</label>
-                    <div className="stars">
-                        {[1, 2, 3, 4, 5].map((num) => (
-                        <span
-                            key={num}
-                            className={num <= estrellasSeleccionadas ? 'star filled' : 'star'}
-                            onClick={() => setEstrellasSeleccionadas(num)}
-                        >
-                            ★
-                        </span>
-                        ))}
-                    </div>
+              <h3>Añadir comentario sobre el evento</h3>
+              <label>¿Qué opinás de este evento?</label>
+              <textarea placeholder="Escribí tu comentario aquí." rows={3}></textarea>
+              <div className="rating-stars">
+                <label>¿Cuántas estrellas le das?</label>
+                <div className="stars">
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <span
+                      key={num}
+                      className={num <= estrellasSeleccionadas ? 'star filled' : 'star'}
+                      onClick={() => setEstrellasSeleccionadas(num)}
+                    >
+                      ★
+                    </span>
+                  ))}
                 </div>
-
+              </div>
               <button type="submit" className="btn-publicar">Publicar comentario</button>
             </form>
           )}

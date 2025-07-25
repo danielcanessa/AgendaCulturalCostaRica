@@ -6,6 +6,10 @@ import Perfil from './pages/Perfil/Perfil';
 import UpdatePerfil from './pages/UpdatePerfil/UpdatePerfil';
 import Event from './pages/Event/Event';
 import CreateEvent from './pages/CreateEvent/CreateEvent';
+import EditEvent from './pages/EditEvent/EditEvent';
+import MiAgenda from './pages/MiAgenda/MiAgenda';
+import EventAdm from './pages/EventAdmin/EventAdmin';
+import UserAdmin from './pages/UserAdmin/UserAdmin';
 
 function App() {
   return (
@@ -15,9 +19,15 @@ function App() {
         <Route path="/registro" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/perfil/:correoUsuario" element={<Perfil />} />
         <Route path="/perfil/editar" element={<UpdatePerfil />} />
         <Route path="/Event/:id" element={<Event />} />
         <Route path="/crear-evento" element={<CreateEvent />} />
+        <Route path="/editar-evento/:id" element={<EditEvent />} />
+        <Route path="/mi-agenda" element={<MiAgenda />} />
+        <Route path="/admin/eventos" element={<EventAdm/>}/>
+         <Route path="/admin/usuarios" element={<UserAdmin/>}/>
+
       </Routes>
     </BrowserRouter>
   );

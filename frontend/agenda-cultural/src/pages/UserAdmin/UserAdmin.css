@@ -1,0 +1,107 @@
+.user-admin-container {
+    padding: 30px;
+    background-color: #e9e9e9;
+     min-height: 70vh;
+}
+
+.user-admin-page{
+    background-color: #f2f2f2;
+    padding: 30px;
+    border-radius: 5px;
+    max-width: 800px;
+    margin: auto;
+ 
+}
+
+.titulo {
+  color: #cc4c00;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.subtitulo {
+  color: #cc4c00;
+  font-size: 1.5rem;
+  margin: 2rem 0 1rem;
+}
+
+.busqueda {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 5px;
+  padding: 0.4rem 0.8rem;
+  width: fit-content;
+  border: 1px solid #ccc;
+}
+
+.input-container i {
+  margin-right: 0.5rem;
+}
+
+.input-container input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+.tabla-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  margin-top: 1rem;
+}
+
+.tabla-usuarios th,
+.tabla-usuarios td {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.tabla-usuarios th {
+  background-color: #f2f2f2;
+}
+
+.tabla-usuarios a {
+  color: #0C2849;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.acciones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-editar,
+.btn-eliminar {
+  border: none;
+  padding: 0.5rem 0.75rem;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-editar {
+  background-color: #cc4c00;
+}
+
+.btn-eliminar {
+  background-color: #b94025;
+}
+
+
+
