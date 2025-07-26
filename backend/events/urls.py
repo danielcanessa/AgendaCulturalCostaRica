@@ -4,6 +4,9 @@ Automatically generated API routes for all viewsets.
 """
 
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
 from django.urls import path
 from .views import (
     CurrencyViewSet, UserRoleViewSet, OrganizationViewSet, UserViewSet,
@@ -11,7 +14,11 @@ from .views import (
     AccessibilityFeatureViewSet, EventAccessibilityFeatureViewSet, CommentViewSet
 )
 from .auth_views import (
-    LoginAPIView
+    EmailTokenObtainPairView,
+    RegisterAPIView,
+    LogoutAPIView,
+    MeAPIView,
+    ChangePasswordAPIView,
 )
 
 # Register API endpoints for all models
@@ -29,5 +36,10 @@ router.register(r'comments', CommentViewSet)
 
 # Combine router URLs and manual ones
 urlpatterns = router.urls + [
-    path('login/', LoginAPIView.as_view(), name='login'),
+    path('login/', EmailTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('register/', RegisterAPIView.as_view(), name='register'),
+    path("api/logout/", LogoutAPIView.as_view(), name="logout"),
+    path('api/me/', MeAPIView.as_view(), name='me'),
+    path('api/change-password/', ChangePasswordAPIView.as_view(), name='change_password'),
 ]

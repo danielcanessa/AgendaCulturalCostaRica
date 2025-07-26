@@ -4,6 +4,38 @@ Models define the structure of the data and relationships in the database.
 """
 
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+
+class CustomUserManager(BaseUserManager):
+    """
+    Custom manager for User model.
+    Handles user creation and password hashing for compatibility with Django admin and JWT.
+    """
+    def create_user(self, email, password=None, **extra_fields):
+        """
+        Create and save a regular User with the given email and password.
+        """
+        if not email:
+            raise ValueError('The Email field must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)  # Hashes the password using Django's password hasher
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        """
+        Create and save a SuperUser with the given email and password.
+        """
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+
+        return self.create_user(email, password, **extra_fields)
 
 class Currency(models.Model):
     """
@@ -60,10 +92,11 @@ class Organization(models.Model):
     def __str__(self):
         return f"Organization(id={self.id}, name={self.name})"
 
-class User(models.Model):
+class User(AbstractBaseUser, PermissionsMixin):
     """
     Stores user accounts for both event organizers and visitors.
     Includes authentication fields and links to roles/organizations.
+    Compatible with Django admin and JWT authentication.
     """
     name = models.CharField(
         max_length=100,
@@ -75,14 +108,10 @@ class User(models.Model):
         null=True, blank=True,
         help_text="User's last name."
     )
-    email = models.CharField(
+    email = models.EmailField(
         max_length=100,
         unique=True,
         help_text="Email address (used as login)."
-    )
-    password_hash = models.CharField(
-        max_length=100,
-        help_text="Hashed user password."
     )
     phone = models.CharField(
         max_length=30,
@@ -98,12 +127,13 @@ class User(models.Model):
         help_text="True if the user has created events that have been published."
     )
     role = models.ForeignKey(
-        UserRole, on_delete=models.PROTECT,
+        'UserRole', on_delete=models.PROTECT,
         help_text="User's role (for access control)."
     )
     organization = models.ForeignKey(
-        Organization, on_delete=models.PROTECT,
-        help_text="Organization the user belongs to."
+        'Organization', on_delete=models.PROTECT,
+        null=True, blank=True,
+        help_text="Organization the user belongs to (optional)."
     )
     created_at = models.DateTimeField(
         auto_now_add=True, null=True,
@@ -113,10 +143,27 @@ class User(models.Model):
         auto_now=True, null=True,
         help_text="Last update timestamp."
     )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Designates whether this user should be treated as active."
+    )
+    is_staff = models.BooleanField(
+        default=False,
+        help_text="For Django admin compatibility (not used in app logic)."
+    )
+    is_superuser = models.BooleanField(
+        default=False,
+        help_text="For Django admin compatibility (not used in app logic)."
+    )
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return f"User(id={self.id}, name={self.name or ''} {self.last_name or ''}, email={self.email})"
-
+    
 class Category(models.Model):
     """
     Represents an event category (e.g., Music, Art, Sports).
@@ -257,7 +304,7 @@ class UserEvent(models.Model):
         help_text="Related event."
     )
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        User, on_delete=models.CASCADE, related_name='user_events',
         help_text="Related user."
     )
 
@@ -311,7 +358,7 @@ class Comment(models.Model):
     Can include an optional image (e.g., ticket proof, selfie at event).
     """
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        User, on_delete=models.CASCADE, related_name='user_comments',
         help_text="User who made the comment."
     )
     event = models.ForeignKey(
