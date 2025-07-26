@@ -17,6 +17,75 @@ This project is developed as part of the **Software Design course** at CENFOTEC,
 - Event comments and rating system
 - Admin interface for managing users and content
 
+## Backend API
+
+The backend API is built with **Django REST Framework** and provides the following endpoints:
+
+### Endpoints & Methods
+
+| Resource                      | Endpoint (Prefix)                  | GET   | POST  | PUT   | PATCH | DELETE |
+|-------------------------------|------------------------------------|-------|-------|-------|-------|--------|
+| Currency                      | `api/currencies/`                     | ✔️    | ✔️    | ✔️    | ✔️    | ✔️     |
+| User Role                     | `api/userroles/`                      | ✔️    | ❌    | ❌    | ❌    | ❌     |
+| Organization                  | `api/organizations/`                  | ✔️    | ✔️    | ✔️    | ✔️    | ✔️     |
+| User                          | `api/users/`                          | ✔️    | ❌    | ✔️    | ✔️    | ✔️     |
+| Category                      | `api/categories/`                     | ✔️    | ✔️    | ✔️    | ✔️    | ✔️     |
+| Event                         | `api/events/`                         | ✔️    | ✔️    | ✔️    | ✔️    | ✔️     |
+| UserEvent (My Agenda)         | `api/userevents/`                     | ✔️    | ✔️    | ✔️    | ✔️    | ✔️     |
+| Accessibility Feature         | `api/accessibilityfeatures/`          | ✔️    | ✔️    | ✔️    | ✔️    | ✔️     |
+| EventAccessibilityFeature     | `api/eventaccessibilityfeatures/`     | ✔️    | ✔️    | ✔️    | ✔️    | ✔️     |
+| Comment                       | `api/comments/`                       | ✔️    | ✔️    | ✔️    | ✔️    | ✔️     |
+
+**Authentication/User Endpoints:**
+
+| Endpoint              | Methods   | Description                      |
+|-----------------------|-----------|----------------------------------|
+| `/login/`             | POST      | Obtain access & refresh token    |
+| `/refresh/`           | POST      | Refresh access token             |
+| `/register/`          | POST      | User registration                |
+| `/logout/`            | POST      | Blacklist refresh token          |
+| `/me/`                | GET       | Current user info (JWT required) |
+| `/change-password/`   | POST      | Change current user password     |
+
+### Available Filters
+
+| Resource                    | Filters (query params)                                   |
+|-----------------------------|---------------------------------------------------------|
+| Currency                    | `name`                                                  |
+| Organization                | `email`                                                 |
+| User                        | `email`, `name`, `role`, `organization`                 |
+| Event                       | `category`, `created_by`, `approved_by`, `is_event_approved`, `is_event_active` |
+| UserEvent (My Agenda)       | `user`, `event`                                         |
+| EventAccessibilityFeature   | `event`, `accessibility_feature`                        |
+| Comment                     | `event`, `user`                                         |
+
+You can use filters as query parameters, e.g. `/events/?category=2&is_event_approved=true`
+
+### Permissions Matrix
+
+| Resource                      | GET            | POST           | PUT/PATCH        | DELETE           |
+|-------------------------------|----------------|----------------|------------------|------------------|
+| **Currency**                  | Authenticated  | Admin          | Admin            | Admin            |
+| **UserRole**                  | Public         | -              | -                | -                |
+| **Organization**              | Authenticated  | Authenticated  | Admin/Creator    | Admin/Creator    |
+| **User**                      | Creator/Admin  | -              | Creator/Admin    | Creator/Admin    |
+| **Category**                  | Public         | Admin          | Admin            | Admin            |
+| **Event**                     | Public         | Authenticated  | Admin/Creator    | Admin/Creator    |
+| **UserEvent** (My Agenda)     | Creator/Admin  | Authenticated  | Creator/Admin    | Creator/Admin    |
+| **AccessibilityFeature**      | Admin          | Admin          | Admin            | Admin            |
+| **EventAccessibilityFeature** | Admin/Creator  | Admin/Creator  | Admin/Creator    | Admin/Creator    |
+| **Comment**                   | Public         | Authenticated  | Creator          | Admin/Creator    |
+
+- **Admin**: User with “Administrator” role.
+- **Creator**: The user who created the object.
+- **Authenticated**: Any logged-in user.
+- **Public**: No authentication required.
+- “-”: Not available.
+
+**Note:**  
+- All endpoints (except `/login/`, `/register/`, `/refresh/`) require JWT authentication unless marked as "Public".
+- Some write/delete actions require admin or object creator privileges.
+
 ## Development Setup (Automatic)
 
 ### 1. Clone the repository
@@ -47,11 +116,16 @@ There are two options:
 - [http://localhost:8000/api](http://localhost:8000/api): Django REST API
 - [http://localhost:8000/admin](http://localhost:8000/admin): Django Admin interface
 
-### 3. Load sample data (optional)
+### 3. Load sample data (this includes the roles)
 If you want to pre-populate the database with sample data, run:
 
 ```bash
-bash scripts/load_sample_data_rest.sh
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cd scripts
+python dev_seed.py
 ```
 
 This script will use the Django REST API to create some initial events, venues, and other data to test the application.

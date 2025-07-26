@@ -28,6 +28,8 @@ import base64
 import binascii
 import logging
 
+from .permissions import is_admin
+
 # Set up logger for your module
 logger = logging.getLogger(__name__)
 
@@ -143,11 +145,24 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        password = validated_data.pop('password', None)
+        password = validated_data.pop('password', None)        
         if not password:
             raise serializers.ValidationError({"password": "This field is required."})
-        user = User(**validated_data)
-        user.set_password(password)  # Correctamente usa set_password
+
+        is_staff = False
+        is_superuser = False
+
+        role_obj = validated_data.get('role')
+        if is_admin(role_obj):
+            is_staff = True
+            is_superuser = True
+
+        user = User(
+            **validated_data,
+            is_staff=is_staff,
+            is_superuser=is_superuser
+        )
+        user.set_password(password)
         user.save()
         return user
 

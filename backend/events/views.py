@@ -23,10 +23,11 @@ from .serializers import (
     AccessibilityFeatureSerializer, EventAccessibilityFeatureSerializer, CommentSerializer
 )
 from .permissions import (
-    is_admin,
+    is_admin_role,
     IsAdmin, # DFR BasePermission
     IsAdminOrCreator # DFR BasePermission
 )
+from django_filters.rest_framework import DjangoFilterBackend
 
 import os
 
@@ -66,6 +67,7 @@ class CurrencyViewSet(viewsets.ModelViewSet):
 
     queryset = Currency.objects.all()
     serializer_class = CurrencySerializer
+    filterset_fields = ['name']
 
     def get_permissions(self):
         # Allow only authenticated users for GET (list/retrieve)
@@ -100,6 +102,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     """
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
+    filterset_fields = ['email']
 
     def get_permissions(self):
         """
@@ -119,6 +122,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    filterset_fields = ['email', 'name', 'role', 'organization']
 
     def get_permissions(self):
         if self.action == 'create':
@@ -127,7 +131,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if is_admin(user):
+        if is_admin_role(user):
             return User.objects.all()
         return User.objects.filter(pk=user.pk)
     
@@ -165,6 +169,10 @@ class EventViewSet(viewsets.ModelViewSet, DeleteFileHelperMixin):
     """API endpoint for viewing or editing Event."""
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    filterset_fields = [
+        'category', 'created_by', 'approved_by',
+        'is_event_approved', 'is_event_active',
+    ]
 
     def get_permissions(self):
         """
@@ -186,6 +194,7 @@ class EventViewSet(viewsets.ModelViewSet, DeleteFileHelperMixin):
         """
         Custom endpoint for approving an event.
         Only admins can approve events.
+        When approved, marks the event creator as an event organizer.
         """
         event = self.get_object()
         if event.is_event_approved:
@@ -193,9 +202,17 @@ class EventViewSet(viewsets.ModelViewSet, DeleteFileHelperMixin):
                 {"detail": "Event is already approved."},
                 status=status.HTTP_400_BAD_REQUEST
             )
+    
         event.is_event_approved = True
         event.approved_by = request.user
         event.save()
+    
+        # --- Extra: Mark creator as event organizer ---
+        creator = event.created_by
+        if creator and not creator.is_event_organizer:
+            creator.is_event_organizer = True
+            creator.save(update_fields=["is_event_organizer"])
+    
         serializer = self.get_serializer(event)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -214,6 +231,7 @@ class UserEventViewSet(viewsets.ModelViewSet):
     """
     queryset = UserEvent.objects.all()
     serializer_class = UserEventSerializer
+    filterset_fields = ['user', 'event']
 
     def get_permissions(self):
         if self.action == 'create':
@@ -225,7 +243,7 @@ class UserEventViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         # Admin sees all, others see only their own
-        if is_admin(user):
+        if is_admin_role(user):
             return UserEvent.objects.all()
         return UserEvent.objects.filter(user=user)
 
@@ -251,6 +269,7 @@ class EventAccessibilityFeatureViewSet(viewsets.ModelViewSet):
     """
     queryset = EventAccessibilityFeature.objects.all()
     serializer_class = EventAccessibilityFeatureSerializer
+    filterset_fields = ['event', 'accessibility_feature']
 
     def get_permissions(self):
         # Only allow POST, PUT, PATCH, DELETE (admin/creator)
@@ -260,6 +279,8 @@ class CommentViewSet(viewsets.ModelViewSet, DeleteFileHelperMixin):
     """API endpoint for viewing or editing Comment."""
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['event', 'user']
 
     def get_permissions(self):
         """

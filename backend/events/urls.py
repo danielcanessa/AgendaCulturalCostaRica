@@ -37,9 +37,9 @@ router.register(r'comments', CommentViewSet)
 # Combine router URLs and manual ones
 urlpatterns = router.urls + [
     path('login/', EmailTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', RegisterAPIView.as_view(), name='register'),
-    path("api/logout/", LogoutAPIView.as_view(), name="logout"),
-    path('api/me/', MeAPIView.as_view(), name='me'),
-    path('api/change-password/', ChangePasswordAPIView.as_view(), name='change_password'),
+    path("logout/", LogoutAPIView.as_view(), name="logout"),
+    path('me/', MeAPIView.as_view(), name='me'),
+    path('change-password/', ChangePasswordAPIView.as_view(), name='change_password'),
 ]

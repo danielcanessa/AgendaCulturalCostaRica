@@ -5,13 +5,22 @@ These classes define business rules for access control on API endpoints.
 
 from rest_framework import permissions
 
-def is_admin(user):
+def is_admin(role):
+    """
+    Helper function to check if a role name represents an Administrator.
+    """
+    admin_roles = ['administrator', 'admin', 'superuser', 'root', 'administrador']
+    if isinstance(role, str):
+        return role.strip().lower() in admin_roles
+    if hasattr(role, "name"):
+        return str(role.name).strip().lower() in admin_roles
+    return False
+
+def is_admin_role(user):
     """
     Helper function to check if a user has the Administrator role.
-    Compares user's role name to 'administrator' (case-insensitive).
     """
-    administrator_roles = ['administrator', 'admin', 'superuser', 'root', 'administrador']
-    return user.is_authenticated and getattr(getattr(user, "role", None), "name", "").lower() in administrator_roles
+    return user.is_authenticated and is_admin(getattr(user, "role", None))
 
 class IsAdmin(permissions.BasePermission):
     """
@@ -19,12 +28,12 @@ class IsAdmin(permissions.BasePermission):
     Use for endpoints where only admin users are allowed.
     """
     def has_permission(self, request, view):
-        return request.user.is_authenticated and is_admin(request.user)
+        return request.user.is_authenticated and is_admin_role(request.user)
 
 class IsAdminOrCreator(permissions.BasePermission):
     """
     Custom permission to grant access to:
-    - Admin users (as determined by the is_admin() helper).
+    - Admin users (as determined by the is_admin_role() helper).
     - The creator/owner of the object, based on:
         * 'created_by' attribute (e.g., Organization, Event).
         * 'user' attribute (e.g., Comment, UserEvent).
@@ -40,7 +49,7 @@ class IsAdminOrCreator(permissions.BasePermission):
             return False
 
         # Admins always have permission
-        if is_admin(user):
+        if is_admin_role(user):
             return True
 
         # If the object is a User instance, allow if the requesting user is the same
