@@ -79,13 +79,84 @@ class Base64ImageHelperMixin:
             raise serializers.ValidationError("Failed to save image file.")
         return filename
 
-############################## Models Serializers ##############################
+############################### Currency Serializers ##############################
 
 class CurrencySerializer(serializers.ModelSerializer):
     """Serializer for Currency model."""
     class Meta:
         model = Currency
         fields = '__all__'
+
+########################### Lean Serializer ##############################
+class RoleLeanSerializer(serializers.ModelSerializer):
+    """Returns only id and name for the role."""
+    class Meta:
+        model = UserRole
+        fields = ("id", "name")
+
+class OrganizationLeanSerializer(serializers.ModelSerializer):
+    """Returns only id and name for the organization."""
+    class Meta:
+        model = Organization
+        fields = ("id", "name")
+
+class UserLeanSerializer(serializers.ModelSerializer):
+    """Returns a lean representation of the user with role and organization."""
+    role = RoleLeanSerializer(read_only=True)
+    organization = OrganizationLeanSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ("id", "email", "name", "last_name", "role", "organization")
+
+class CategoryLeanSerializer(serializers.ModelSerializer):
+    """
+    Lean serializer for Category, only returns id and name.
+    """
+    class Meta:
+        model = Category
+        fields = ("id", "name")
+
+class AccessibilityFeatureLeanSerializer(serializers.ModelSerializer):
+    """
+    Lean serializer for AccessibilityFeature, only returns id and name.
+    """
+    class Meta:
+        model = AccessibilityFeature
+        fields = ("id", "name")
+        
+class EventLeanSerializer(serializers.ModelSerializer):
+    """
+    Lean serializer for Event.
+    Includes category (lean), currency (expanded), and accessibility features (expanded list).
+    """
+    category = CategoryLeanSerializer(read_only=True)
+    currency = CurrencySerializer(read_only=True)
+    accessibility_features = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Event
+        fields = (
+            "id",
+            "name",
+            "start_datetime",
+            "price",
+            "is_event_approved",
+            "is_event_active",
+            "category",
+            "currency",
+            "accessibility_features"
+        )
+
+    def get_accessibility_features(self, obj):
+        # This retrieves all AccessibilityFeature objects related to this Event via the join table
+        features = EventAccessibilityFeature.objects.filter(event=obj)
+        return [
+            AccessibilityFeatureLeanSerializer(ef.accessibility_feature).data
+            for ef in features
+        ]
+    
+############################## Models Serializers ##############################
 
 class UserRoleSerializer(serializers.ModelSerializer):
     """Serializer for UserRole model."""
@@ -107,8 +178,8 @@ class UserSerializer(serializers.ModelSerializer):
     # Password field is write-only: user can set it, but it never appears in responses.
     password = serializers.CharField(write_only=True, required=False)
 
-    # Display full role info (expanded using UserRoleSerializer) in the response (GET).
-    role = UserRoleSerializer(read_only=True)
+    # Display lean role info (expanded using RoleLeanSerializer) in the response (GET).
+    role = RoleLeanSerializer(read_only=True)
 
     # Display full organization info in the response (GET).
     organization = OrganizationSerializer(read_only=True)
@@ -222,7 +293,7 @@ class EventSerializer(Base64ImageHelperMixin, serializers.ModelSerializer):
     )
 
     # Expand category in output (GET)
-    category = CategorySerializer(read_only=True)
+    category = CategoryLeanSerializer(read_only=True)
 
     # Input category by id in POST/PUT
     category_id = serializers.PrimaryKeyRelatedField(
@@ -230,10 +301,10 @@ class EventSerializer(Base64ImageHelperMixin, serializers.ModelSerializer):
     )
 
     # Expand created_by user in output (GET)
-    created_by = UserSerializer(read_only=True)
+    created_by = UserLeanSerializer(read_only=True)
 
     # Expand approved_by user in output (GET)
-    approved_by = UserSerializer(read_only=True)
+    approved_by = UserLeanSerializer(read_only=True)
 
     # Expand accessibility features in output (GET)
     accessibility_features = serializers.SerializerMethodField()
@@ -263,16 +334,10 @@ class EventSerializer(Base64ImageHelperMixin, serializers.ModelSerializer):
         read_only_fields = ['is_event_approved', 'approved_by']
 
     def get_accessibility_features(self, obj):
-        # Return a list of expanded accessibility features related to this event
-        # Note: this is required because an event can have multiple accessibility features
-        # and we need to return them as a list of objects with id, name, and description.
+        # This retrieves all AccessibilityFeature objects related to this Event via the join table
         features = EventAccessibilityFeature.objects.filter(event=obj)
         return [
-            {
-                'id': ef.accessibility_feature.id,
-                'name': ef.accessibility_feature.name,
-                'description': ef.accessibility_feature.description,
-            }
+            AccessibilityFeatureLeanSerializer(ef.accessibility_feature).data
             for ef in features
         ]
 
@@ -324,11 +389,11 @@ class UserEventSerializer(serializers.ModelSerializer):
     - Uses event_id for input (POST/PUT) for easier frontend usage.
     """
 
-    event = EventSerializer(read_only=True)
+    event = EventLeanSerializer(read_only=True)
     event_id = serializers.PrimaryKeyRelatedField(
         source='event', queryset=Event.objects.all(), write_only=True
     )
-    user = UserSerializer(read_only=True)
+    user = UserLeanSerializer(read_only=True)
 
     class Meta:
         model = UserEvent
@@ -361,7 +426,7 @@ class EventAccessibilityFeatureSerializer(serializers.ModelSerializer):
     - Uses *_id fields for input (POST/PUT).
     """
     # Expand event info in output (GET)
-    event = EventSerializer(read_only=True)
+    event = EventLeanSerializer(read_only=True)
    
     # Input event by id in POST/PUT
     event_id = serializers.PrimaryKeyRelatedField(
@@ -398,8 +463,8 @@ class CommentSerializer(Base64ImageHelperMixin, serializers.ModelSerializer):
     """
     image_base64 = serializers.CharField(required=False)
 
-    user = UserSerializer(read_only=True)  # Output only
-    event = EventSerializer(read_only=True)
+    user = UserLeanSerializer(read_only=True)  # Output only
+    event = EventLeanSerializer(read_only=True)
     event_id = serializers.PrimaryKeyRelatedField(
         source='event', queryset=Event.objects.all(), write_only=True
     )
@@ -472,7 +537,7 @@ class EmailTokenObtainPairSerializer(serializers.Serializer):
         data = {
             "refresh": str(refresh),
             "access": str(refresh.access_token),
-            "user": UserSerializer(user).data,
+            "user": UserLeanSerializer(user).data,
         }
         return data
 

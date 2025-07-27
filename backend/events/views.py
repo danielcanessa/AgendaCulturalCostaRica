@@ -67,7 +67,7 @@ class CurrencyViewSet(viewsets.ModelViewSet):
 
     queryset = Currency.objects.all()
     serializer_class = CurrencySerializer
-    filterset_fields = ['name']
+    filterset_fields = ['id', 'name']
 
     def get_permissions(self):
         # Allow only authenticated users for GET (list/retrieve)
@@ -80,6 +80,7 @@ class UserRoleViewSet(viewsets.ModelViewSet):
     """API endpoint for viewing UserRole. Only GET is allowed (public)."""
     queryset = UserRole.objects.all()
     serializer_class = UserRoleSerializer
+    filterset_fields = ['id']
     permission_classes = [AllowAny]   
 
     def create(self, request, *args, **kwargs):
@@ -102,7 +103,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     """
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
-    filterset_fields = ['email']
+    filterset_fields = ['id', 'email']
 
     def get_permissions(self):
         """
@@ -122,7 +123,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    filterset_fields = ['email', 'name', 'role', 'organization']
+    filterset_fields = ['id', 'email', 'name', 'role', 'organization']
 
     def get_permissions(self):
         if self.action == 'create':
@@ -151,6 +152,7 @@ class CategoryViewSet(viewsets.ModelViewSet, DeleteFileHelperMixin):
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    filterset_fields = ['id']
 
     def get_permissions(self):
          # Allow public users to list/retrieve (GET), admin for everything else
@@ -170,7 +172,7 @@ class EventViewSet(viewsets.ModelViewSet, DeleteFileHelperMixin):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     filterset_fields = [
-        'category', 'created_by', 'approved_by',
+        'id', 'category', 'created_by', 'approved_by',
         'is_event_approved', 'is_event_active',
     ]
 
@@ -231,7 +233,7 @@ class UserEventViewSet(viewsets.ModelViewSet):
     """
     queryset = UserEvent.objects.all()
     serializer_class = UserEventSerializer
-    filterset_fields = ['user', 'event']
+    filterset_fields = ['id', 'user', 'event']
 
     def get_permissions(self):
         if self.action == 'create':
@@ -254,6 +256,7 @@ class AccessibilityFeatureViewSet(viewsets.ModelViewSet):
     """
     queryset = AccessibilityFeature.objects.all()
     serializer_class = AccessibilityFeatureSerializer
+    filterset_fields = ['id']
 
     def get_permissions(self):
         """
@@ -269,7 +272,7 @@ class EventAccessibilityFeatureViewSet(viewsets.ModelViewSet):
     """
     queryset = EventAccessibilityFeature.objects.all()
     serializer_class = EventAccessibilityFeatureSerializer
-    filterset_fields = ['event', 'accessibility_feature']
+    filterset_fields = ['id', 'event', 'accessibility_feature']
 
     def get_permissions(self):
         # Only allow POST, PUT, PATCH, DELETE (admin/creator)
@@ -280,7 +283,7 @@ class CommentViewSet(viewsets.ModelViewSet, DeleteFileHelperMixin):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['event', 'user']
+    filterset_fields = ['id', 'event', 'user']
 
     def get_permissions(self):
         """

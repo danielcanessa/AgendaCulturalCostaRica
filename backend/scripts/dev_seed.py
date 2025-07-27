@@ -29,30 +29,19 @@ expected_roles_response = [
 # Expected login data admin
 expected_login_admin_response = {
    "user":{      
-      "name":"Alfonso",
-      "last_name":"Brenes",
       "email":"alfonso_brenes@email.com",
-      "phone":"1111-2222",
-      "bio":"Soy el admin.",         
       "role":{
          "name":"Administrador",
-         "description":"Administrator role with full permissions."
-      },
+       },
    }
 }
 
 # Expected login data visitor Ana
 expected_login_visitor_ana_response = {
-   "user":{
-      "name":"Ana",
-      "last_name":"Martínez",
-      "email":"ana@email.com",
-      "phone":"2222-3333",
-      "bio":"Soy visitante y me encanta asistir a museos",
-      "is_event_organizer":False,
+   "user":{    
+      "email":"ana@email.com",     
       "role":{
-         "name":"Visitante",
-         "description":"Standard visitor user."
+         "name":"Visitante",        
       },
       "organization":None
    }
@@ -61,20 +50,12 @@ expected_login_visitor_ana_response = {
 # Expected login data visitor Pedro
 expected_login_visitor_pedro_response = {
     "user":{
-      "name":"Pedro",
-      "last_name":"Muñoz",
-      "email":"peter@email.com",
-      "phone":"2222-3378",
-      "bio":"Soy visitante y me encanta asistir a teatros.",
-      "is_event_organizer":False,
+      "email":"peter@email.com",   
       "role":{
-         "name":"Visitante",
-         "description":"Standard visitor user."
+         "name":"Visitante",        
       },
       "organization":{
          "name":"Teatro Nacional",
-         "phone":"2222-0000",
-         "email":"contacto@teatro.cr"
       }
    }
 }
@@ -88,8 +69,7 @@ expected_users_admin_get = [
       "phone":"1111-2222",
       "bio":"Soy el admin.",   
       "role":{
-         "name":"Administrador",
-         "description":"Administrator role with full permissions."
+         "name":"Administrador",       
       },
       "organization":None
    },
@@ -101,8 +81,7 @@ expected_users_admin_get = [
       "bio":"Soy visitante y me encanta asistir a museos",
       "is_event_organizer":False,
       "role":{        
-         "name":"Visitante",
-         "description":"Standard visitor user."
+         "name":"Visitante",         
       },
       "organization":{       
          "name":"Museo Nacional",
@@ -118,8 +97,7 @@ expected_users_admin_get = [
       "bio":"Soy visitante y me encanta asistir a teatros.",
       "is_event_organizer":False,
       "role":{
-         "name":"Visitante",
-         "description":"Standard visitor user."
+         "name":"Visitante",         
       },
       "organization":{
          "name":"Teatro Nacional",
@@ -170,13 +148,10 @@ expected_comments_get = [
             "last_name": "Muñoz",
             "email": "peter@email.com",        
             "role": {               
-                "name": "Visitante",
-                "description": "Standard visitor user."
+                "name": "Visitante",               
             },
             "organization": {              
-                "name": "Teatro Nacional",
-                "phone": "2222-0000",
-                "email": "contacto@teatro.cr"
+                "name": "Teatro Nacional",               
             }
         },
         "event": {         
@@ -420,7 +395,7 @@ def login_user(email, password):
     payload = {"email": email, "password": password}
     status, data = api_post(url, payload)
     assert status == 200, f"Login failed: {data}"
-    print("Login successful:", data["user"]["name"])
+    print("Login successful:", data["user"]["email"])
     return data.get('access'), data.get('refresh'), data
 
 def create_organization(org_data, access_token):
