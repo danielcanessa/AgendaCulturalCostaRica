@@ -46,18 +46,20 @@ The backend API is built with **Django REST Framework** and provides the followi
 | `/logout/`            | POST      | Blacklist refresh token          |
 | `/me/`                | GET       | Current user info (JWT required) |
 | `/change-password/`   | POST      | Change current user password     |
+| `/api/password-reset/` | POST      | Request password reset email     |
+| `/api/password-reset/confirm/` | POST | Confirm password reset token     |
 
 ### Available Filters
 
 | Resource                    | Filters (query params)                                   |
 |-----------------------------|---------------------------------------------------------|
-| Currency                    | `name`                                                  |
-| Organization                | `email`                                                 |
-| User                        | `email`, `name`, `role`, `organization`                 |
-| Event                       | `category`, `created_by`, `approved_by`, `is_event_approved`, `is_event_active` |
-| UserEvent (My Agenda)       | `user`, `event`                                         |
-| EventAccessibilityFeature   | `event`, `accessibility_feature`                        |
-| Comment                     | `event`, `user`                                         |
+| Currency                    | `id`, `name`                                                  |
+| Organization                | `id`, `email`                                                 |
+| User                        | `id`, `email`, `name`, `role`, `organization`                 |
+| Event                       | `id`, `category`, `created_by`, `approved_by`, `is_event_approved`, `is_event_active` |
+| UserEvent (My Agenda)       | `id`, `user`, `event`                                         |
+| EventAccessibilityFeature   | `id`, `event`, `accessibility_feature`                        |
+| Comment                     | `id`, `event`, `user`                                         |
 
 You can use filters as query parameters, e.g. `/events/?category=2&is_event_approved=true`
 

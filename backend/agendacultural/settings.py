@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'django_filters',
+    'django_rest_passwordreset',
     'rest_framework',
     "rest_framework_simplejwt.token_blacklist",
     'events',
@@ -154,4 +155,14 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
 }
 
+# Custom user model
 AUTH_USER_MODEL = 'events.User'
+
+# Email settings for password reset
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development, use console backend
+
+# For production, configure SMTP settings here
+# EMAIL_HOST = 'smtp.example.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = ' 

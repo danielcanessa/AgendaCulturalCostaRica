@@ -29,7 +29,7 @@ expected_roles_response = [
 # Expected login data admin
 expected_login_admin_response = {
    "user":{      
-      "email":"alfonso_brenes@email.com",
+      "email":"dcanessav@ucenfotec.ac.cr",
       "role":{
          "name":"Administrador",
        },
@@ -63,9 +63,9 @@ expected_login_visitor_pedro_response = {
 # Expected users GET, admin role
 expected_users_admin_get = [
    {    
-      "name":"Alfonso",
-      "last_name":"Brenes",
-      "email":"alfonso_brenes@email.com",
+      "name":"Daniel",
+      "last_name":"Canessa",
+      "email":"dcanessav@ucenfotec.ac.cr",
       "phone":"1111-2222",
       "bio":"Soy el admin.",   
       "role":{
@@ -165,9 +165,9 @@ expected_comments_get = [
 
 # User data for registration, role admin
 user_admin_data_post = {
-    "name": "Alfonso",
-    "last_name": "Brenes",
-    "email": "alfonso_brenes@email.com",
+    "name": "Daniel",
+    "last_name": "Canessa",
+    "email": "dcanessav@ucenfotec.ac.cr",
     "password": "Secret123!",
     "phone": "1111-2222",
     "bio": "Soy el admin.",
@@ -670,8 +670,8 @@ def main():
 
     # Login to get token
     print("--- Logging in users to get access tokens...")
-    user_admin_access_token, user_admin_refresh_token, data_alfonso = login_user(user_admin_data_post['email'], user_admin_data_post['password'])
-    assert validate_expected_in_actual(expected_login_admin_response, data_alfonso), f"Admin login data_alfonso does not match expected structure expected:{expected_login_admin_response}, received: {data_alfonso}"
+    user_admin_access_token, user_admin_refresh_token, data_daniel = login_user(user_admin_data_post['email'], user_admin_data_post['password'])
+    assert validate_expected_in_actual(expected_login_admin_response, data_daniel), f"Admin login data_daniel does not match expected structure expected:{expected_login_admin_response}, received: {data_daniel}"
 
     user_visitante__ana_access_token, user_visitante_ana_refresh_token, data_ana = login_user(user_visitor_ana_data_post['email'], user_visitor_ana_data_post['password'])
     assert validate_expected_in_actual(expected_login_visitor_ana_response, data_ana), f"Visitante login data_ana does not match expected structure expected:{expected_login_visitor_ana_response}, received: {data_ana}"
@@ -741,7 +741,7 @@ def main():
     base_64_str_evento_teatro = image_to_base64("sample_images/evento_lo_mismo.jpg")
     base_64_str_evento_musica = image_to_base64("sample_images/evento_concierto.jpg")
 
-    # --- Evento de Danza (creado por Alfonso) ---
+    # --- Evento de Danza (creado por Daniel) ---
     events_danza_data_post["currency_id"] = colon_id
     events_danza_data_post["category_id"] = category_danza_id
     events_danza_data_post["event_banner_base64"] = base_64_str_evento_danza

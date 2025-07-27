@@ -7,7 +7,10 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
-from django.urls import path
+from django.urls import (
+    path,
+    include,
+)
 from .views import (
     CurrencyViewSet, UserRoleViewSet, OrganizationViewSet, UserViewSet,
     CategoryViewSet, EventViewSet, UserEventViewSet,
@@ -42,4 +45,5 @@ urlpatterns = router.urls + [
     path("logout/", LogoutAPIView.as_view(), name="logout"),
     path('me/', MeAPIView.as_view(), name='me'),
     path('change-password/', ChangePasswordAPIView.as_view(), name='change_password'),
+    path('password-reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 ]
