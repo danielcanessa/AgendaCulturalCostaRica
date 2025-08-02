@@ -680,8 +680,8 @@ def main():
     # Create organizations and validate
     print("--- Creating organizations...")
     
-    id_organization_museo = create_organization(organization_museo_data_post, user_admin_access_token)["id"] # Use admin token to create organization
-    id_organization_teatro = create_organization(organization_teatro_data_post, user_admin_access_token)["id"] # Use admin token to create organization
+    id_organization_museo = create_organization(organization_museo_data_post, user_visitante__ana_access_token)["id"] # Use admin token to create organization
+    id_organization_teatro = create_organization(organization_teatro_data_post, user_visitante__ana_access_token)["id"] # Use admin token to create organization
 
     organizations = get_organizations(user_admin_access_token)  # Use visitor's token to fetch organizations
     assert validate_expected_in_actual(expected_organizations, organizations), f"Organizations data does not match expected structure expected:{expected_organizations}, received: {organizations}"

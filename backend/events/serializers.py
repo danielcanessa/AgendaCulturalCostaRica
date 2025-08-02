@@ -166,9 +166,22 @@ class UserRoleSerializer(serializers.ModelSerializer):
 
 class OrganizationSerializer(serializers.ModelSerializer):
     """Serializer for Organization model."""
+    # Read-only field: expands created_by as a lean user object in GET responses
+    created_by = UserLeanSerializer(read_only=True)
+
     class Meta:
         model = Organization
-        fields = '__all__'
+        fields = ('id', 'name', 'phone', 'email', 'created_by')
+
+    def create(self, validated_data):
+        """
+        Overrides the default create method to always set the 'created_by' field
+        to the currently authenticated user, regardless of any input provided by the client.
+        This ensures organizations cannot be created on behalf of other users.
+        """
+        user = self.context['request'].user  # Get the authenticated user from the request context
+        validated_data['created_by'] = user  # Assign the creator of the organization
+        return super().create(validated_data)
     
 class UserSerializer(serializers.ModelSerializer):
     """

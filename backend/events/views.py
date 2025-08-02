@@ -103,7 +103,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     """
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
-    filterset_fields = ['id', 'email']
+    filterset_fields = ['id', 'email', 'created_by']
 
     def get_permissions(self):
         """

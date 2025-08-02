@@ -88,6 +88,13 @@ class Organization(models.Model):
         null=True, blank=True,
         help_text="Organization's contact email."
     )
+    created_by = models.ForeignKey(
+        'User',  # Self-referential foreign key to User
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='organizations_created',
+        help_text="User who created this organization."
+    )
 
     def __str__(self):
         return f"Organization(id={self.id}, name={self.name})"
