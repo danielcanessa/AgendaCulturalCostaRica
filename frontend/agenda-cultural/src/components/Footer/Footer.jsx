@@ -9,21 +9,77 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-content">
-        <img className="logo-footer" src={logoFooter} alt="" />
+        <img className="logo-footer" src={logoFooter} alt="Agenda Cultural Costa Rica" />
         <div className="footer-col">
           <p>Enlaces útiles</p>
-          <a href="#">Información</a><br />
-          <a href="#">Información</a>
+          <button
+            type="button"
+            className="footer-link-btn"
+            tabIndex={0}
+            aria-label="Acerca de nosotros"
+            onClick={() => window.alert('Próximamente: Acerca de nosotros')}
+          >
+            Acerca de nosotros
+          </button>
+          <br />
+          <br />
+          <button
+            type="button"
+            className="footer-link-btn"
+            tabIndex={0}
+            aria-label="Información legal"
+            onClick={() => window.alert('Próximamente: Información legal')}
+          >
+            Información legal
+          </button>
         </div>
         <div className="footer-col">
           <p>Conectá con nosotros</p>
           <div className="redes">
-            <span><a target='_blank' href="https://www.facebook.com"><img src={facebook} alt="Red social facebook" /></a></span>
-            <span><a target='_blank' href="https://www.instagram.com"><img src={instagram} alt="Red social instagram" /></a></span>
-            <span><a target='_blank' href="https://www.tiktok.com"><img src={tiktok} alt="Red social tiktok" /></a></span>
-            <span><a target='_blank' href="https://www.youtube.com"><img src={youtube} alt="Red social youtube" /></a></span>
+            <span>
+              <a
+                target='_blank'
+                rel="noopener noreferrer"
+                href="https://www.facebook.com"
+                aria-label="Facebook"
+              >
+                <img src={facebook} alt="Facebook de Agenda Cultural Costa Rica" />
+              </a>
+            </span>
+            <span>
+              <a
+                target='_blank'
+                rel="noopener noreferrer"
+                href="https://www.instagram.com"
+                aria-label="Instagram"
+              >
+                <img src={instagram} alt="Instagram de Agenda Cultural Costa Rica" />
+              </a>
+            </span>
+            <span>
+              <a
+                target='_blank'
+                rel="noopener noreferrer"
+                href="https://www.tiktok.com"
+                aria-label="TikTok"
+              >
+                <img src={tiktok} alt="TikTok de Agenda Cultural Costa Rica" />
+              </a>
+            </span>
+            <span>
+              <a
+                target='_blank'
+                rel="noopener noreferrer"
+                href="https://www.youtube.com"
+                aria-label="YouTube"
+              >
+                <img src={youtube} alt="YouTube de Agenda Cultural Costa Rica" />
+              </a>
+            </span>
           </div>
-          <p>agendaculturalcr@gmail.com</p>
+          <p>
+            <a href="mailto:agendaculturalcr@gmail.com">agendaculturalcr@gmail.com</a>
+          </p>
         </div>
       </div>
       <div className="footer-copy">

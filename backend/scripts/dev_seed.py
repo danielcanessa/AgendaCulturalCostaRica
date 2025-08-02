@@ -387,7 +387,7 @@ def register_user(user_data):
     url = f"{api_base_url}/register/"
     status, data = api_post(url, user_data)
     assert status == 201, f"User registration failed: {data}"
-    print("User registered:", data["name"])
+    print("User registered:", data)
     return data
 
 def login_user(email, password):

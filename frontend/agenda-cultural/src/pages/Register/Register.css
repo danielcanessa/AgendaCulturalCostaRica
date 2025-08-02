@@ -18,7 +18,7 @@
     flex: 1;
     padding: 30px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* ¡Esto asegura que el form sea vertical! */
 }
 
 .register-form label {
@@ -27,17 +27,34 @@
     color: #0C2849;
 }
 
-input::placeholder{
+input::placeholder,
+.register-form textarea::placeholder {
     color: #D3D1D1;
 }
 
 .register-form input[type="text"],
 .register-form input[type="email"],
-.register-form input[type="password"] {
+.register-form input[type="password"],
+.register-form input[type="tel"] {
     padding: 8px;
     margin-top: 4px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+.register-form textarea {
+    padding: 8px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #0C2849;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 60px;
+    max-height: 200px;
+    font-size: 1em;
 }
 
 .register-form .checkbox {
@@ -47,12 +64,12 @@ input::placeholder{
     justify-content: center;
 }
 
-.checkbtn{
+.checkbtn {
     width: 20px;
     height: 20px;
 }
 
-.checkbox label{
+.checkbox label {
     margin-top: -3px;
 }
 
@@ -68,10 +85,9 @@ input::placeholder{
     text-align: center;
 }
 
-.button-section{
+.button-section {
     text-align: center;
 }
-
 
 .register-form .button {
     background-color: #ff6600;
@@ -113,8 +129,28 @@ input::placeholder{
     font-size: 2em;
 }
 
-.text-overlay p{
-    
+.text-overlay p {
     margin-top: -20px;
     font-size: 1.2em;
+}
+
+.error {
+  color: #e01a1a;
+  margin-top: 4px;
+  margin-bottom: 10px;
+  font-size: 1em;
+}
+
+.bio-counter {
+  font-size: 0.85em;
+  color: #888;
+  margin-top: -6px;
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+/* Solo bordes rojos para campos con error */
+input[aria-invalid="true"], textarea[aria-invalid="true"] {
+  border-color: #e01a1a !important;
+  background: #fff9f9;
 }
