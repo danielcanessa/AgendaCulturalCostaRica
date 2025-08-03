@@ -4,29 +4,24 @@ import EventCard from '../../components/EventCard/EventCard';
 import Footer from '../../components/Footer/Footer';
 import './Home.css';
 import { getUsuarioActual } from '../../utils/getUsuarioActual';
-import eventos from '../../data/eventos';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+
 
 export default function Home() {
   const { tipoUsuario, nombre } = getUsuarioActual();
 
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
   const [busqueda, setBusqueda] = useState('');
+  // conexion
+  const [eventosBackend, setEventosBackend] = useState([]);
+
+  useEffect(() => {
+    getEventsAndShow();
+  }, []);
   
-  const [eventosBackend, setEventosBackend] = useState([]); // Estado para almacenar eventos desde el backend
+   // Estado para almacenar eventos desde el backend
   const [mostrarEventos, setMostrarEventos] = useState(false); // Estado para controlar la visibilidad de los eventos
-
-  // FILTRANDO CON las categorías y por nombre del evento 
-  const eventosFiltrados = eventos.filter(ev => {
-    const coincideCategoria =
-      !categoriaSeleccionada || categoriaSeleccionada === 'Todos'
-        ? true
-        : ev.categoria === categoriaSeleccionada;
-
-    const coincideBusqueda = ev.nombre.toLowerCase().includes(busqueda.toLowerCase());
-
-    return coincideCategoria && coincideBusqueda;
-  });
 
   ////////////////////////////////// Remover this section when the integration is ready START //////////////////////////////////
   const handleLoginAdmin = async () => {
@@ -154,12 +149,15 @@ export default function Home() {
       }
 
       const data = await response.json();
-      console.log('Eventos:', data);
-      alert('Eventos impresos en consola.');
+      setEventosBackend(data);
     } catch (error) {
       alert(error.message);
     }
   };
+
+
+  
+
 
   // Obtener eventos del backend y mostrar con imagen
   const getEventsAndShow = async () => {
@@ -176,6 +174,7 @@ export default function Home() {
       }
 
       const data = await response.json();
+      console.log('✅ Eventos recibidos del backend:', data);
       setEventosBackend(data);
       setMostrarEventos(true);
     } catch (error) {
@@ -195,7 +194,19 @@ export default function Home() {
 
 
 
+  
+// FILTRANDO CON las categorías y por nombre del evento 
+const eventosFiltrados = eventosBackend.filter(ev => {
+  const coincideCategoria =
+    !categoriaSeleccionada || categoriaSeleccionada === 'Todos'
+      ? true
+      : ev.category?.name === categoriaSeleccionada;
 
+  const coincideBusqueda = ev.name.toLowerCase().includes(busqueda.toLowerCase());
+  const publicado = ev.is_event_approved === true;
+
+  return coincideCategoria && coincideBusqueda && publicado;
+});
   
 
   ////////////////////////////////// Remover this section when the integration is ready End //////////////////////////////////
@@ -229,34 +240,6 @@ export default function Home() {
         Mostrar eventos del backend (con imagen)
       </button>
 
-      {mostrarEventos && (
-      <section className="events">
-        <h3 className='event-Title'>Eventos desde el backend</h3>
-        <div className="events-grid">
-          {eventosBackend.length > 0 ? (
-            eventosBackend.map(ev => (
-              <div key={ev.id} className="evento-card-backend">
-                <h4>{ev.name}</h4>
-                <p>{ev.description}</p>
-                <p><b>Fecha:</b> {ev.start_datetime}</p>
-                <p><b>Categoría:</b> {ev.category?.name}</p>
-                <p><b>Precio:</b> {ev.price} {ev.currency?.name}</p>
-                {ev.event_banner_base64 && (
-                  <img
-                    src={`data:${guessMimeFromBase64(ev.event_banner_base64)};base64,${ev.event_banner_base64}`}
-                    alt={ev.name}
-                    style={{ width: 250, height: 'auto', borderRadius: 10, marginBottom: 10 }}
-                    onError={e => { e.target.src = '/placeholder.jpg'; }}
-                  />
-                )}
-              </div>
-            ))
-          ) : (
-            <p>No hay eventos disponibles.</p>
-          )}
-        </div>
-      </section>
-    )}
 
 
 
@@ -272,61 +255,61 @@ export default function Home() {
 
 
 
+<Header tipoUsuario={tipoUsuario} nombre={nombre} />
 
+<main className="home">
+  <section className="banner">
+    <div className="overlay">
+      <h2>Descubrí lo mejor de la cultura.</h2>
+      <h3>Cerca de tí.</h3>
+    </div>
+  </section>
 
-      <Header tipoUsuario={tipoUsuario} nombre={nombre} />
-      
-      <main className="home">
-        <section className="banner">
-          <div className="overlay">
-            <h2>Descubrí lo mejor de la cultura.</h2>
-            <h3>Cerca de tí.</h3>
-          </div>
-        </section>
+  <section className="categorias">
+    <h1 className='title'>Categorías</h1>
+    <CategoryList onCategoriaSeleccionada={setCategoriaSeleccionada} />
+  </section>
 
-        <section className="categorias">
-          <h1 className='title'>Categorías</h1>
-          <CategoryList onCategoriaSeleccionada={setCategoriaSeleccionada} />
-        </section>
+  <section className="events">
+    <div className='container-events'>
+      <h3 className='event-Title'>Eventos</h3>
+      <div className='search'>
+        <i className='bx bx-search'></i>
+        <input
+          type="text"
+          placeholder="Buscar por nombre..."
+          className="search-input"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+        />
+      </div>
+    </div>
 
-        <section className="events">
-          <div className='container-events'>
-            <h3 className='event-Title'>Eventos</h3>
-            <div className='search'>
-              <i className='bx  bx-search'></i> 
+    <div className="events-grid">
+    {eventosFiltrados.length > 0 ? (
+    eventosFiltrados.map(ev => (
+      <EventCard
+        key={ev.id}
+        id={ev.id}
+        titulo={ev.name}
+        fecha={ev.start_datetime}
+        lugar={ev.address || ev.location || "Sin dirección"}
+        imagen={
+          ev.event_banner_base64
+            ? `data:${guessMimeFromBase64(ev.event_banner_base64)};base64,${ev.event_banner_base64}`
+            : '/placeholder.jpg'
+        }
+      />
+    ))
+  ) : (
+    <p className='error-msj'>No hay eventos publicados.</p>
+  )}
+</div>
 
-              <input
-                type="text"
-                placeholder="Buscar por nombre..."
-                className="search-input"
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-              />
-            </div>
-          </div>
+  </section>
+</main>
 
-          
-          <div className="events-grid">
-            {eventosFiltrados.filter(ev => ev.estado?.toLowerCase() === 'publicado').length > 0 ? (
-            eventosFiltrados
-              .filter(ev => ev.estado?.toLowerCase() === 'publicado')
-              .map((event) => (
-              <EventCard
-                key={event.id}
-                id={event.id}
-                titulo={event.nombre}
-                fecha={event.fecha}
-                lugar={event.direccion}
-                imagen={event.imagen}
-              />
-            ))
-            ) : (
-              <p className='error-msj'>No hay eventos publicados.</p>
-            )}
-          </div>
-        </section>
-      </main>
-      <Footer />
-    </>
+<Footer />
+</>
   );
 }

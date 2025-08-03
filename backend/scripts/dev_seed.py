@@ -688,7 +688,7 @@ def main():
 
     print("Organizations created and validation")
 
-    # Register a second visitor but with an organization
+    # Register a second visitor but with an organization 
     print("--- Registering second visitor with organization...")
     user_visitor_pedro_data_post["role_id"] = role_visitor_id
     user_visitor_pedro_data_post["organization_id"] = id_organization_teatro

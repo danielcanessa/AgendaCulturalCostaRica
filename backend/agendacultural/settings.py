@@ -88,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'agenda_cultural_db',
         'USER': 'root',
-        'PASSWORD': 'mysqlpassword',  # Set your MySQL password here
+        'PASSWORD': 'tefa2295',  # Set your MySQL password here
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
