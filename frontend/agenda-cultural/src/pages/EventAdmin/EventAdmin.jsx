@@ -12,7 +12,7 @@ import { getUsuarioActual } from '../../utils/getUsuarioActual';
 
 
 export default function EventAdm() {
-  const { tipoUsuario, nombre } = getUsuarioActual();
+  const { tipoUsuario, nombre, correo} = getUsuarioActual();
 
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
   const [busqueda, setBusqueda] = useState('');
@@ -33,7 +33,7 @@ export default function EventAdm() {
   const navigate = useNavigate();
   return (
     <>
-     <Header tipoUsuario={tipoUsuario} nombre={nombre} />
+    <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
     <main className="admin-eventos">
       
       <section className='adm-events'>

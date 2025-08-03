@@ -40,7 +40,7 @@ export default function MiAgenda() {
 
   return (
     <>
-     <Header tipoUsuario={tipoUsuario} nombre={nombre} />
+     <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
     <main className='mi-agenda-container'>
         <section className="miagenda-page">
             <h1 className="titulo-agenda">Mi Agenda</h1>

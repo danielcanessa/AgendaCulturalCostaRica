@@ -9,7 +9,8 @@ import { useEffect, useState } from 'react';
 
 
 export default function Home() {
-  const { tipoUsuario, nombre } = getUsuarioActual();
+  
+  const { tipoUsuario, nombre, correo } = getUsuarioActual();
 
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
   const [busqueda, setBusqueda] = useState('');
@@ -209,6 +210,9 @@ const eventosFiltrados = eventosBackend.filter(ev => {
 });
   
 
+
+
+
   ////////////////////////////////// Remover this section when the integration is ready End //////////////////////////////////
   
   
@@ -255,7 +259,7 @@ const eventosFiltrados = eventosBackend.filter(ev => {
 
 
 
-<Header tipoUsuario={tipoUsuario} nombre={nombre} />
+<Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
 
 <main className="home">
   <section className="banner">

@@ -16,7 +16,7 @@ export default function EditEvent() {
   const { id } = useParams();
   const evento = eventos.find(ev => ev.id === parseInt(id));
 
-  const { tipoUsuario, nombre } = getUsuarioActual();
+  const { tipoUsuario, nombre, correo } = getUsuarioActual();
 
   const [latLng, setLatLng] = useState(null);
   const [imagenPrevia, setImagenPrevia] = useState(null);
@@ -106,7 +106,7 @@ export default function EditEvent() {
 
   return (
     <>
-      <Header tipoUsuario={tipoUsuario} nombre={nombre} />
+      <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
       <main className="create-event-container">
         <section className="createvent-page">
           <h2 className="titulo-form">Editar Evento</h2>
