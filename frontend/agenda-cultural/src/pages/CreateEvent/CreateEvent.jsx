@@ -12,6 +12,7 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 export default function CreateEvent() {
+    
 
     //Codigo para que se visualice el puntero en el mapa
     delete L.Icon.Default.prototype._getIconUrl;
@@ -21,7 +22,7 @@ export default function CreateEvent() {
     shadowUrl: markerShadow,
     });
 
-  const { tipoUsuario, nombre } = getUsuarioActual();
+    const { tipoUsuario, nombre, correo } = getUsuarioActual();
   const [latLng, setLatLng] = useState(null);
   //precargar la imagen
   const [imagenPrevia, setImagenPrevia] = useState(null);
@@ -48,7 +49,7 @@ export default function CreateEvent() {
 
   return (
     <>
-      <Header tipoUsuario={tipoUsuario} nombre={nombre} />
+      <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
       <main className="create-event-container">
         <section className='createvent-page'> 
             <h2 className="titulo-form">Crear Evento</h2>

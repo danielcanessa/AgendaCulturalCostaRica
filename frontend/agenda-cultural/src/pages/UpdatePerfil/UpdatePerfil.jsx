@@ -159,7 +159,7 @@ export default function UpdatePerfil() {
 
   return (
     <>
-      <Header tipoUsuario={usuarioActual.tipoUsuario} nombre={usuarioActual.nombre} />
+      <Header tipoUsuario={usuarioActual.tipoUsuario} nombre={usuarioActual.nombre} correo={usuarioActual.correo}  />
       <main className="update-perfil-page">
         <div className="update-container">
           <div className="update-card">

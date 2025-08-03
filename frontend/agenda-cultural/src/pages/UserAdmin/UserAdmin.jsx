@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { getUsuarioActual } from '../../utils/getUsuarioActual';
 
 export default function UserAdmin() {
-  const { tipoUsuario, nombre } = getUsuarioActual();
+  const { tipoUsuario, nombre, correo } = getUsuarioActual();
   const navigate = useNavigate();
   const [busqueda, setBusqueda] = useState('');
 
@@ -17,7 +17,7 @@ export default function UserAdmin() {
 
   return (
     <>
-    <Header tipoUsuario={tipoUsuario} nombre={nombre} />
+    <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
     <main className='user-admin-container'>
     <section className="user-admin-page">
       <h2 className="titulo">Administrar Usuarios</h2>

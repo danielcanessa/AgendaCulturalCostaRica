@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 export default function Event() {
   
 
-  const {tipoUsuario , nombre, correo } = getUsuarioActual();
+  const { tipoUsuario, nombre, correo } = getUsuarioActual();
   const [searchParams] = useSearchParams();
   const modo = searchParams.get("modo");
   const mostrarSolicitudCambios = tipoUsuario?.toLowerCase() === "admin" && modo === "solicitar-cambios";
@@ -49,7 +49,7 @@ export default function Event() {
   if (cargando) {
     return (
       <>
-        <Header tipoUsuario={tipoUsuario} nombre={nombre} />
+        <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
         <main className="evento-page">
           <h2>Cargando evento...</h2>
         </main>
@@ -74,7 +74,7 @@ export default function Event() {
 
   return (
     <>
-      <Header tipoUsuario={tipoUsuario} nombre={nombre} />
+      <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
       <main className="event-page">
         <div className='event-banner'>
         <img

@@ -1,15 +1,20 @@
 export function getUsuarioActual() {
-  try {
-    const datos = JSON.parse(localStorage.getItem('usuario'));
-    if (!datos) return { tipoUsuario: 'visitante', nombre: '' };
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-    const { rol, nombre, correo } = datos;
+  let tipoUsuario = "visitante";
+  let nombre = "Visitante";
+  let correo = "";
 
-    if (rol === 'admin') return { tipoUsuario: 'admin', nombre, correo };
-    if (rol === 'usuario') return { tipoUsuario: 'usuario', nombre, correo};
+  if (usuario) {
+    nombre = usuario.name || "Usuario";
+    correo = usuario.email || "";
 
-    return { tipoUsuario: 'visitante', nombre: '' };
-  } catch (e) {
-    return { tipoUsuario: 'visitante', nombre: '' };
+    if (usuario.role?.name === "Administrador") {
+      tipoUsuario = "admin";
+    } else if (usuario.role?.name === "Visitante") {
+      tipoUsuario = "usuario";
+    }
   }
+
+  return { tipoUsuario, nombre, correo };
 }
