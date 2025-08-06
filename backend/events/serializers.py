@@ -266,7 +266,7 @@ class CategorySerializer(Base64ImageHelperMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'description', 'image_base64']
+        fields = ['id', 'name', 'description', 'image_base64', 'image_alt']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -333,7 +333,7 @@ class EventSerializer(Base64ImageHelperMixin, serializers.ModelSerializer):
             'id', 'name', 'description', 'start_datetime', 'end_datetime', 'price',
             'ticket_link', 'contact_email', 'contact_phone', 'address', 'map_location',
             'is_event_approved', 'last_request_change_reason', 'delete_reason',
-            'is_event_active', 'created_at', 'updated_at',
+            'is_event_active', 'created_at', 'updated_at', 'event_banner_alt',
             'created_by',            # Expanded user info (read-only, GET)            
             'approved_by',           # Expanded user info (read-only, GET)
             'category',              # Expanded category info (read-only, GET)
@@ -493,6 +493,7 @@ class CommentSerializer(Base64ImageHelperMixin, serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'image_base64', # For sending/receiving comment image as base64 string
+            'image_alt',
         ]
 
     def to_representation(self, instance):

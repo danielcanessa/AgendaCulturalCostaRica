@@ -1,5 +1,15 @@
 import sys
 import os
+
+# Ask for the mysql password
+if len(sys.argv) < 2:
+    print("Usage: python scripts/dev_seed.py <DB_PASSWORD>")
+    sys.exit(1)
+
+os.environ['DB_PASSWORD'] = sys.argv[1]
+
+#### Once we exported the password we can import the other packages
+
 import django
 import requests
 import base64
@@ -226,6 +236,7 @@ events_danza_data_post =  {
     "contact_phone": "2255-3322",
     "address": "Teatro Nacional, San José",
     "map_location": "https://maps.google.com/?q=Teatro+Nacional",
+    "event_banner_alt": "Imagen que muestra la descripción del evento 'Festival Nacional de Danza' en formato visual",
     # The following fields are assigned using the IDs fetched from the database
     #"currency_id": , 
     #"category_id": ,
@@ -241,6 +252,7 @@ events_teatro_data_post = {
     "contact_email": "teatro@cultura.cr",
     "contact_phone": "2222-1234",
     "address": "Teatro Mélico Salazar",
+    "event_banner_alt": "Imagen que muestra la descripción del evento 'Obra de tearto: Lo mismo' en formato visual"
     # The following fields are assigned using the IDs fetched from the database
     #"currency_id": , 
     #"category_id": ,
@@ -256,6 +268,7 @@ events_musica_data = {
     "contact_email": "musica@festival.cr",
     "contact_phone": "8888-0000",
     "address": "Estadio Nacional",
+    "event_banner_alt": "Imagen que muestra la descripción del evento 'Concierto de Rock Sinfónico' en formato visual",
     # The following fields are assigned using the IDs fetched from the database
     #"category_id": ,
     #"event_banner_base64": 
@@ -427,7 +440,7 @@ def get_all_users(access_token):
     headers = {"Authorization": f"Bearer {access_token}"}
     return api_get(url, headers=headers) 
 
-def create_category(name, description, image_base64, access_token):
+def create_category(name, description, image_base64, image_alt_text, access_token):
     url = f"{api_base_url}/categories/"
     headers = {
         "Authorization": f"Bearer {access_token}",
@@ -436,7 +449,8 @@ def create_category(name, description, image_base64, access_token):
     data = {
         "name": name,
         "description": description,
-        "image_base64": image_base64
+        "image_base64": image_base64,
+        "image_alt": image_alt_text,
     }
     status_code, response_data = api_post(url, data, headers=headers)
     assert status_code == 201, f"Failed to create category '{name}': {response_data}"
@@ -547,7 +561,7 @@ def link_accessibility_feature_to_event(event_id, accessibility_feature_id, acce
     return response_data
 
 
-def post_event_comment(event_id, comment_text, access_token, image_base64=None):
+def post_event_comment(event_id, comment_text, access_token, image_base64=None, image_alt_text=None):
     """
     Posts a comment to a given event.
 
@@ -573,6 +587,9 @@ def post_event_comment(event_id, comment_text, access_token, image_base64=None):
 
     if image_base64:
         payload["image_base64"] = image_base64
+
+    if image_alt_text:
+        payload["image_alt"] = image_alt_text
 
     status_code, response_data = api_post(url, payload, headers=headers)
     assert status_code == 201, f"Failed to post comment to event {event_id}: {response_data}"
@@ -725,9 +742,9 @@ def main():
     base64_str_category_teatro = image_to_base64("sample_images/categoria_teatro.png")
     base64_str_category_musica = image_to_base64("sample_images/categoria_musica.png")    
 
-    category_danza_id = create_category("Danza", "Eventos de danza y coreografía", base64_str_category_danza, user_admin_access_token)["id"]
-    category_teatro_id = create_category("Teatro", "Obras teatrales y actuaciones", base64_str_category_teatro, user_admin_access_token)["id"]
-    category_musica_id = create_category("Música", "Conciertos y presentaciones musicales", base64_str_category_musica, user_admin_access_token)["id"]
+    category_danza_id = create_category("Danza", "Eventos de danza y coreografía", base64_str_category_danza, "Icono de personas danzando", user_admin_access_token)["id"]
+    category_teatro_id = create_category("Teatro", "Obras teatrales y actuaciones", base64_str_category_teatro, "Icono de máscaras de teatro", user_admin_access_token)["id"]
+    category_musica_id = create_category("Música", "Conciertos y presentaciones musicales", base64_str_category_musica, "Icono que notas musicales", user_admin_access_token)["id"]
     
     categories = get_all_categories()
     assert validate_expected_in_actual(expected_categories_get, categories), f"Categories data does not match expected structure expected:{expected_categories_get}, received: {categories}"
@@ -817,7 +834,7 @@ def main():
 
     # Comentario con imagen
     image_str = image_to_base64("sample_images/comentario_danza.jpg")
-    post_event_comment(event_danza_id, "Aquí disfrutando del evento 🎉", user_visitante__ana_access_token, image_base64=image_str)
+    post_event_comment(event_danza_id, "Aquí disfrutando del evento 🎉", user_visitante__ana_access_token, image_base64=image_str, image_alt_text= "Imagen de personas bailando")
     print("Comments posted successfully.")
 
     # Bookmark events

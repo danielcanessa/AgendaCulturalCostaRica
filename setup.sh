@@ -19,6 +19,7 @@ if [ -z "$1" ]; then
 fi
 
 MYSQL_ROOT_PASSWORD="$1"
+export DB_PASSWORD="$MYSQL_ROOT_PASSWORD"
 
 # 1. Drop and recreate database
 echo "Dropping and recreating MySQL database"
@@ -50,4 +51,4 @@ python manage.py migrate
 
 # 4. Start development server (before populating data)
 echo "Starting Django development server"
-exec python manage.py runserver
+DB_PASSWORD="$MYSQL_ROOT_PASSWORD" python manage.py runserver

@@ -191,6 +191,11 @@ class Category(models.Model):
         null=True, 
         help_text="Path to the category icon or image (optional). Use ImageField for file storage."
     )
+    image_alt = models.CharField(
+        max_length=255,
+        null=True, blank=True,
+        help_text="Alternative text for the category image (for accessibility)."
+    )
 
     def __str__(self):
         return f"Category(id={self.id}, name={self.name})"
@@ -292,6 +297,11 @@ class Event(models.Model):
         null=True, blank=True,
         help_text="Path to the event banner image (optional)."
     )
+    event_banner_alt = models.CharField(
+        max_length=255,
+        null=True, blank=True,
+        help_text="Alternative text for the event banner image (for accessibility)."
+    )
 
     def __str__(self):
         fields = [
@@ -387,6 +397,11 @@ class Comment(models.Model):
         max_length=255,
         null=True, blank=True,
         help_text="Path to the comment image (optional)."
+    )
+    image_alt = models.CharField(
+        max_length=255,
+        null=True, blank=True,
+        help_text="Alternative text for the comment image (for accessibility)."
     )
 
     def __str__(self):

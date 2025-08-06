@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -88,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'agenda_cultural_db',
         'USER': 'root',
-        'PASSWORD': 'tefa2295',  # Set your MySQL password here
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'defaultpassword'),
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {

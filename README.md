@@ -127,7 +127,7 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 cd scripts
-python dev_seed.py
+python dev_seed.py mysqlpassword
 ```
 
 This script will use the Django REST API to create some initial events, venues, and other data to test the application.
