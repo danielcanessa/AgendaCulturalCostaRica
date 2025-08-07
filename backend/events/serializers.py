@@ -344,7 +344,7 @@ class EventSerializer(Base64ImageHelperMixin, serializers.ModelSerializer):
             'event_banner_base64',   # For sending/receiving event banner as base64 string
             'accessibility_features' # Expanded list of accessibility features (read-only, GET)
         ]
-        read_only_fields = ['is_event_approved', 'approved_by']
+        read_only_fields = ['approved_by']
 
     def get_accessibility_features(self, obj):
         # This retrieves all AccessibilityFeature objects related to this Event via the join table
@@ -388,9 +388,9 @@ class EventSerializer(Base64ImageHelperMixin, serializers.ModelSerializer):
             )
 
         # On any update, set event as not approved again
-        validated_data['is_event_approved'] = False
-        validated_data['approved_by'] = None 
-
+        if 'is_event_approved' not in validated_data:
+            validated_data['is_event_approved'] = False
+            validated_data['approved_by'] = None 
         # Do not change created_by or approved_by here (handled via custom endpoints if needed)
         return super().update(instance, validated_data)
 
