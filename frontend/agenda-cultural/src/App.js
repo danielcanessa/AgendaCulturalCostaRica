@@ -19,7 +19,7 @@ function App() {
         <Route path="/registro" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/perfil" element={<Perfil />} />
-        <Route path="/perfil/:correoUsuario" element={<Perfil />} />
+        <Route path="/perfil/:id" element={<Perfil />} />
         <Route path="/perfil/editar" element={<UpdatePerfil />} />
         <Route path="/Event/:id" element={<Event />} />
         <Route path="/crear-evento" element={<CreateEvent />} />

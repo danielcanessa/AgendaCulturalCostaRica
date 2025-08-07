@@ -89,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'agenda_cultural_db',
         'USER': 'root',
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'defaultpassword'),
+        'PASSWORD': 'tefa2295',#os.environ.get('DB_PASSWORD', 'defaultpassword')
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
