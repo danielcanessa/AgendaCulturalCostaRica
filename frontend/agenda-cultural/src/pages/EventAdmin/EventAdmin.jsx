@@ -1,71 +1,85 @@
-// EventAdm.jsx
-import React from 'react';
+// EventAdmin.jsx
+import React, { useEffect, useState } from 'react';
 import './EventAdmin.css';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
-import eventos from '../../data/eventos';
 import CategoryList from '../../components/CategoryList/CategoryList';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUsuarioActual } from '../../utils/getUsuarioActual';
 
+export default function EventAdmin() {
+  const { tipoUsuario, nombre, correo } = getUsuarioActual();
+  const navigate = useNavigate();
 
-
-export default function EventAdm() {
-  const { tipoUsuario, nombre, correo} = getUsuarioActual();
-
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+  const [eventos, setEventos] = useState([]);
   const [busqueda, setBusqueda] = useState('');
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
 
-  const eventosFiltrados = eventos.filter((ev) => {
-    const coincideCategoria =
-      !categoriaSeleccionada || categoriaSeleccionada === 'Todos'
-        ? true
-        : ev.categoria === categoriaSeleccionada;
-    
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-    const coincideBusqueda = ev.nombre.toLowerCase().includes(busqueda.toLowerCase());
+    fetch("http://localhost:8000/api/events/", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        const noAprobados = data.filter(ev => ev.is_event_approved === false);
+        setEventos(noAprobados);
+      })
+      .catch(err => console.error("Error cargando eventos:", err));
+  }, []);
+
+  const eventosFiltrados = eventos.filter(ev => {
+    const coincideCategoria = !categoriaSeleccionada || categoriaSeleccionada === 'Todos'
+      ? true
+      : ev.category?.name === categoriaSeleccionada;
+
+    const coincideBusqueda = ev.name.toLowerCase().includes(busqueda.toLowerCase());
 
     return coincideCategoria && coincideBusqueda;
   });
 
+  function guessMimeFromBase64(base64String) {
+  if (!base64String) return 'image/jpeg';
+  if (base64String.startsWith('/9j/')) return 'image/jpeg';
+  if (base64String.startsWith('iVBOR')) return 'image/png';
+  return 'image/jpeg';
+}
 
-  const navigate = useNavigate();
   return (
     <>
-    <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
-    <main className="admin-eventos">
-      
-      <section className='adm-events'>
-        <h2 className="titulo-seccion">Administrar Eventos</h2>
-        <div className='event-search'>
-                <h3 className='event-Title titulo-agenda '>Buscar eventos para publicar   </h3>
-                <div className='search'>
-                    <i className='bx  bx-search'></i> 
-
-                    <input
-                        type="text"
-                        placeholder="Buscar por nombre..."
-                        className="search-input"
-                        value={busqueda}
-                        onChange={(e) => setBusqueda(e.target.value)}
-                    />
-                </div>
+      <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
+      <main className="admin-eventos">
+        <section className='adm-events'>
+          <h2 className="titulo-seccion">Administrar Eventos</h2>
+          <div className='event-search'>
+            <h3 className='event-Title titulo-agenda'>Buscar eventos para publicar</h3>
+            <div className='search'>
+              <i className='bx bx-search'></i>
+              <input
+                type="text"
+                placeholder="Buscar por nombre..."
+                className="search-input"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+              />
             </div>
-        <CategoryList onCategoriaSeleccionada={setCategoriaSeleccionada} />
-        <h3 className="subtitulo">Eventos pendientes de revisión:</h3>
-        {eventosFiltrados.filter(ev => ev.estado?.toLowerCase() === 'pendiente').length > 0 ? (
-            eventosFiltrados
-              .filter(ev => ev.estado?.toLowerCase() === 'pendiente')
-              .map((ev) => (
+          </div>
+
+          <CategoryList onCategoriaSeleccionada={setCategoriaSeleccionada} />
+
+          <h3 className="subtitulo">Eventos pendientes de revisión:</h3>
+          {eventosFiltrados.length > 0 ? (
+            eventosFiltrados.map((ev) => (
               <div key={ev.id} className="evento-pendiente">
-                
                 <div className="info-pendiente">
-                  <p><strong>Nombre:</strong> {ev.nombre}</p>
-                  <p><strong>Categoría:</strong> {ev.categoria}</p>
-                  <p><strong>Fecha:</strong> {ev.fecha}</p>
-                  <p><strong>Ubicación:</strong> {ev.direccion}</p>
-                  <p><strong>Correo de contacto:</strong> {ev.correo}</p>
+                  <p><strong>Nombre:</strong> {ev.name}</p>
+                  <p><strong>Categoría:</strong> {ev.category?.name}</p>
+                  <p><strong>Fecha:</strong> {ev.start_datetime?.split("T")[0]}</p>
+                  <p><strong>Ubicación:</strong> {ev.address}</p>
+                  <p><strong>Correo de contacto:</strong> {ev.contact_email}</p>
                   <div className="botones-pendientes">
                     <button className="btn-aceptar">Aprobar</button>
                     <button className="btn-rechazar">Rechazar</button>
@@ -75,19 +89,24 @@ export default function EventAdm() {
                     >
                       Solicitar cambios
                     </button>
-
                   </div>
                 </div>
-                <img src={require(`../../assets/imgEvents/${ev.imagen}`)} alt={ev.nombre} />
+                <img
+                  src={
+                    ev.event_banner_base64
+                      ? `data:${guessMimeFromBase64(ev.event_banner_base64)};base64,${ev.event_banner_base64}`
+                      : '/placeholder.jpg'
+                  }
+                  alt={ev.name}
+                />
               </div>
             ))
-            ) : (
-              <p className='error-msj'>No hay eventos pendientes.</p>
-            )}
-      </section>
-      
-    </main>
-    <Footer />
+          ) : (
+            <p className='error-msj'>No hay eventos pendientes.</p>
+          )}
+        </section>
+      </main>
+      <Footer />
     </>
   );
 }

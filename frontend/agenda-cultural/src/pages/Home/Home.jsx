@@ -218,102 +218,61 @@ const eventosFiltrados = eventosBackend.filter(ev => {
   
   return (
     <>
+      <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
 
+      <main className="home">
+        <section className="banner">
+          <div className="overlay">
+            <h2>Descubrí lo mejor de la cultura.</h2>
+            <h3>Cerca de tí.</h3>
+          </div>
+        </section>
 
-      <button onClick={handleLoginAdmin}>
-        Lgin Admin User
-      </button>
+        <section className="categorias">
+          <h1 className='title'>Categorías</h1>
+          <CategoryList onCategoriaSeleccionada={setCategoriaSeleccionada} />
+        </section>
 
-      <button onClick={handleLoginVisitor}>
-        Lgin Visitor User
-      </button>
+        <section className="events">
+          <div className='container-events'>
+            <h3 className='event-Title'>Eventos</h3>
+            <div className='search'>
+              <i className='bx bx-search'></i>
+              <input
+                type="text"
+                placeholder="Buscar por nombre..."
+                className="search-input"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+              />
+            </div>
+          </div>
 
-      <button onClick={getUsers}>
-        Get Users
-      </button> 
-
-      <button onClick={getEvents}>
-        Get Events
-      </button> 
-
-      <button onClick={handleLogout}>
-        Logout
-      </button> 
-
-      <button onClick={getEventsAndShow}>
-        Mostrar eventos del backend (con imagen)
-      </button>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
-
-<main className="home">
-  <section className="banner">
-    <div className="overlay">
-      <h2>Descubrí lo mejor de la cultura.</h2>
-      <h3>Cerca de tí.</h3>
-    </div>
-  </section>
-
-  <section className="categorias">
-    <h1 className='title'>Categorías</h1>
-    <CategoryList onCategoriaSeleccionada={setCategoriaSeleccionada} />
-  </section>
-
-  <section className="events">
-    <div className='container-events'>
-      <h3 className='event-Title'>Eventos</h3>
-      <div className='search'>
-        <i className='bx bx-search'></i>
-        <input
-          type="text"
-          placeholder="Buscar por nombre..."
-          className="search-input"
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-        />
+          <div className="events-grid">
+          {eventosFiltrados.length > 0 ? (
+          eventosFiltrados.map(ev => (
+            <EventCard
+              key={ev.id}
+              id={ev.id}
+              titulo={ev.name}
+              fecha={ev.start_datetime}
+              lugar={ev.address || ev.location || "Sin dirección"}
+              imagen={
+                ev.event_banner_base64
+                  ? `data:${guessMimeFromBase64(ev.event_banner_base64)};base64,${ev.event_banner_base64}`
+                  : '/placeholder.jpg'
+              }
+            />
+          ))
+        ) : (
+          <p className='error-msj'>No hay eventos publicados.</p>
+        )}
       </div>
-    </div>
 
-    <div className="events-grid">
-    {eventosFiltrados.length > 0 ? (
-    eventosFiltrados.map(ev => (
-      <EventCard
-        key={ev.id}
-        id={ev.id}
-        titulo={ev.name}
-        fecha={ev.start_datetime}
-        lugar={ev.address || ev.location || "Sin dirección"}
-        imagen={
-          ev.event_banner_base64
-            ? `data:${guessMimeFromBase64(ev.event_banner_base64)};base64,${ev.event_banner_base64}`
-            : '/placeholder.jpg'
-        }
-      />
-    ))
-  ) : (
-    <p className='error-msj'>No hay eventos publicados.</p>
-  )}
-</div>
+        </section>
+      </main>
 
-  </section>
-</main>
-
-<Footer />
-</>
+      <Footer />
+    </>
   );
 }

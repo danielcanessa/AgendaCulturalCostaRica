@@ -4,8 +4,10 @@ export function getUsuarioActual() {
   let tipoUsuario = "visitante";
   let nombre = "Visitante";
   let correo = "";
+  let id = null;
 
   if (usuario) {
+    id = usuario.id || null;
     nombre = usuario.name || "Usuario";
     correo = usuario.email || "";
 
@@ -16,5 +18,5 @@ export function getUsuarioActual() {
     }
   }
 
-  return { tipoUsuario, nombre, correo };
+  return { id, tipoUsuario, nombre, correo };
 }
