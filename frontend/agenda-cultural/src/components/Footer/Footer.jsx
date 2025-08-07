@@ -32,6 +32,18 @@ export default function Footer() {
           >
             Información legal
           </button>
+          <br />
+          <br />
+          <button
+            className="btn-contraste footer-link-btn"
+            tabIndex={0}
+            onClick={() => {
+              document.body.classList.toggle('alto-contraste');
+            }}
+            aria-label="Activar o desactivar modo alto contraste"
+          >
+            Alto contraste
+          </button>
         </div>
         <div className="footer-col">
           <p>Conectá con nosotros</p>

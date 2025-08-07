@@ -210,7 +210,7 @@ const eventosFiltrados = eventosBackend.filter(ev => {
 });
   
 
-
+console.log(eventosBackend)
 
 
   ////////////////////////////////// Remover this section when the integration is ready End //////////////////////////////////

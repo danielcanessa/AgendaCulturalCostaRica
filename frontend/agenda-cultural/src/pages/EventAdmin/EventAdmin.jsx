@@ -8,28 +8,83 @@ import { useNavigate } from 'react-router-dom';
 import { getUsuarioActual } from '../../utils/getUsuarioActual';
 
 export default function EventAdmin() {
-  const { tipoUsuario, nombre, correo } = getUsuarioActual();
+  const { tipoUsuario, nombre, correo, id: usuarioId } = getUsuarioActual();
+
   const navigate = useNavigate();
 
   const [eventos, setEventos] = useState([]);
   const [busqueda, setBusqueda] = useState('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+  const token = localStorage.getItem("token");
 
+
+  useEffect(() => {
     fetch("http://localhost:8000/api/events/", {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         const noAprobados = data.filter(ev => ev.is_event_approved === false);
         setEventos(noAprobados);
+        setCargando(false);
       })
-      .catch(err => console.error("Error cargando eventos:", err));
-  }, []);
+      .catch((err) => {
+        console.error("Error cargando eventos:", err);
+        setError("No se pudieron cargar los eventos");
+        setCargando(false);
+      });
+  }, [token]);
+
+  const aprobarEvento = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/events/${id}/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          is_event_approved: true,
+          approved_by: usuarioId
+        })
+      });
+
+      if (!res.ok) throw new Error("Error al aprobar evento");
+
+      setEventos(prev => prev.filter(ev => ev.id !== id));
+      alert("Evento aprobado");
+
+    } catch (err) {
+      console.error("Error aprobando evento:", err);
+      alert("No se pudo aprobar el evento.");
+    }
+  };
+
+  const rechazarEvento = async (id) => {
+    if (!window.confirm("¿Está seguro de eliminar este evento?")) return;
+    try {
+      const res = await fetch(`http://localhost:8000/api/events/${id}/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) throw new Error("Error al eliminar evento");
+
+      setEventos(prev => prev.filter(ev => ev.id !== id));
+      alert("Evento eliminado");
+
+    } catch (err) {
+      console.error("Error eliminando evento:", err);
+      alert("No se pudo eliminar el evento.");
+    }
+  };
 
   const eventosFiltrados = eventos.filter(ev => {
     const coincideCategoria = !categoriaSeleccionada || categoriaSeleccionada === 'Todos'
@@ -42,11 +97,11 @@ export default function EventAdmin() {
   });
 
   function guessMimeFromBase64(base64String) {
-  if (!base64String) return 'image/jpeg';
-  if (base64String.startsWith('/9j/')) return 'image/jpeg';
-  if (base64String.startsWith('iVBOR')) return 'image/png';
-  return 'image/jpeg';
-}
+    if (!base64String) return 'image/jpeg';
+    if (base64String.startsWith('/9j/')) return 'image/jpeg';
+    if (base64String.startsWith('iVBOR')) return 'image/png';
+    return 'image/jpeg';
+  }
 
   return (
     <>
@@ -81,8 +136,8 @@ export default function EventAdmin() {
                   <p><strong>Ubicación:</strong> {ev.address}</p>
                   <p><strong>Correo de contacto:</strong> {ev.contact_email}</p>
                   <div className="botones-pendientes">
-                    <button className="btn-aceptar">Aprobar</button>
-                    <button className="btn-rechazar">Rechazar</button>
+                      <button className="btn-aceptar" onClick={() => aprobarEvento(ev.id)}>Aprobar</button>
+                      <button className="btn-eliminar" onClick={() => rechazarEvento(ev.id)}>Rechazar</button>
                     <button
                       className="btn-solicitar"
                       onClick={() => navigate(`/event/${ev.id}?modo=solicitar-cambios`)}

@@ -11,3 +11,95 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+/* ALTO CONTRASTE*/
+
+body.alto-contraste,
+body.alto-contraste * {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+  box-shadow: none !important;
+}
+
+/*TItulos*/
+/* Textos y títulos */
+body.alto-contraste h1,
+body.alto-contraste h2,
+body.alto-contraste h3,
+body.alto-contraste h4,
+body.alto-contraste h5,
+body.alto-contraste h6,
+body.alto-contraste p,
+body.alto-contraste span,
+body.alto-contraste label,
+body.alto-contraste li,
+body.alto-contraste strong,
+body.alto-contraste em {
+  color: #FFD700  !important;
+}
+
+/* Enlaces */
+body.alto-contraste a {
+  color: #00ffff !important;
+  text-decoration: underline;
+}
+
+/* Botones */
+body.alto-contraste button,
+body.alto-contraste .btn,
+body.alto-contraste .btn-editar,
+body.alto-contraste .btn-eliminar,
+body.alto-contraste .btn-actualizar,
+body.alto-contraste .btn-acciones {
+  background-color: #000 !important;
+  color: #FFD700 !important;
+  border: 2px solid #FFD700 !important;
+}
+
+/* Links */
+body.alto-contraste a {
+  color: #00FFFF !important;
+  text-decoration: underline;
+}
+
+/* Tarjetas */
+body.alto-contraste .card,
+body.alto-contraste .evento-card,
+body.alto-contraste .dropdown,
+body.alto-contraste .tabla-usuarios {
+  background-color: #111 !important;
+  color: #fff !important;
+}
+
+/* Footer y header */
+body.alto-contraste footer,
+body.alto-contraste header {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-top: 2px solid #fff !important;
+}
+/* Inputs */
+body.alto-contraste input,
+body.alto-contraste select,
+body.alto-contraste textarea{
+  background-color: #222 !important;
+  color: #fff !important;
+  border: 1px solid #FFD700 !important;
+}
+
+body.alto-contraste .evento-pendiente,
+body.alto-contraste .category-item,
+body.alto-contraste .footer-copy{
+  border: 1px solid #FFD700 !important;
+}
+
+body.alto-contraste .perfil-container{
+  background-color: transparent !important;
+}
+
+body.alto-contraste main{
+  background-color: #222 !important;
+  color: #fff !important;
+}
