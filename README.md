@@ -1,16 +1,7 @@
-# **Public description**
-Agenda Cultural Costa Rica is an open-source platform (MIT licensed) for municipalities, NGOs, and organizations to promote and manage cultural events. It features a public REST API that can be reused in other applications and services.
+## **Public Description**
+Agenda Cultural Costa Rica is an open-source (MIT licensed) web platform for municipalities, NGOs, and organizations to promote and manage cultural events nationwide. It centralizes event information with a focus on accessibility, allowing democratic publishing and public access through a reusable REST API.
 
-This project is open-source and free to use under the MIT License. You may use, modify, and distribute it for any purpose. We kindly ask that you let us know if you do.
-
-## About the Project
-Agenda Cultural Costa Rica aims to provide a centralized catalog of cultural events across the country, ensuring that accessibility data is prioritized and integrated into event information. The platform empowers municipalities, NGOs, and cultural organizations to democratically publish and manage events. It also offers an open REST API that can be reused by other applications and services to foster cultural engagement and collaboration.
-
-# AgendaCulturalCostaRica
-
-Agenda Cultural Costa Rica is a web application designed to promote and organize cultural events throughout Costa Rica. It allows event organizers to publish events, visitors to discover and bookmark them, and registered users to participate through comments and ratings.
-
-This project is developed as part of the **Software Design course** at CENFOTEC, to apply best practices in full-stack web development, system architecture, and usability/accessibility design.
+Developed as part of the **Software Design course** at CENFOTEC, it applies best practices in full-stack development, system architecture, and accessibility (WCAG 2.1 AA). Users can publish, discover, bookmark, comment on, and rate events.
 
 ## Objectives
 - Unify scattered cultural event information into a single accessible platform.
