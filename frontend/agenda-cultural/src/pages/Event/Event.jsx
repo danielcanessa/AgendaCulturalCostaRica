@@ -1,24 +1,19 @@
-
 import './Event.css';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import { getUsuarioActual } from '../../utils/getUsuarioActual';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react'; 
-
+import { agregarEventoAgendaBackend } from '../../utils/agendaService';
 
 export default function Event() {
-  
-
   const { tipoUsuario, nombre, correo } = getUsuarioActual();
   const [searchParams] = useSearchParams();
   const modo = searchParams.get("modo");
   const mostrarSolicitudCambios = tipoUsuario?.toLowerCase() === "admin" && modo === "solicitar-cambios";
 
   const [estrellasSeleccionadas, setEstrellasSeleccionadas] = useState(0);
-
   const { id } = useParams();
-
   const navigate = useNavigate();
   const [evento, setEvento] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -36,15 +31,10 @@ export default function Event() {
         setCargando(false);
       }
     };
-  
     fetchEvento();
   }, [id]);
 
-
-  
-
   const esAutor = correo === evento?.correoAutor;
-
 
   if (cargando) {
     return (
@@ -70,14 +60,12 @@ export default function Event() {
     );
   }
 
- 
-
   return (
     <>
       <Header tipoUsuario={tipoUsuario} nombre={nombre} correo={correo} />
       <main className="event-page">
         <div className='event-banner'>
-        <img
+          <img
             className='banner'
             src={
               evento.event_banner_base64
@@ -110,7 +98,20 @@ export default function Event() {
 
           {tipoUsuario === 'usuario' && (
             <div className="botones-event">
-              <button className="btn-agenda">Añadir a mi agenda</button>
+              <button
+                className="btn-agenda"
+                onClick={async () => {
+                  const token = localStorage.getItem("access");
+                  const result = await agregarEventoAgendaBackend(evento.id, token);
+                  if (result) {
+                    alert("Evento añadido a tu agenda");
+                  } else {
+                    alert("Hubo un error al guardar el evento");
+                  }
+                }}
+              >
+                Añadir a mi agenda
+              </button>
               {esAutor && (
                 <button
                   className="btn-editar"

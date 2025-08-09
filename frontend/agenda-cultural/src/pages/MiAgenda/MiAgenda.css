@@ -53,6 +53,7 @@
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   padding: 15px;
+  padding-left: 50px;
   align-items: center;
   transition: transform 0.2s ease;
 }
@@ -62,7 +63,7 @@
 }
 
 .evento-card img {
-  width: 160px;
+  width: 400px;
   height: 120px;
   object-fit: cover;
   border-radius: 5px;
@@ -88,16 +89,24 @@
   color: #333;
 }
 
-.btn-ver {
-  margin-top: 10px;
+.btns{
+  display: flex;
+}
+.btn-ver, .btn-eliminar{
+  
   align-self: flex-start;
   background-color: #e95500;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 11px 12px;
   font-size: 14px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.btn-eliminar{
+  margin-left: 5px;
+
 }
 
 .btn-ver:hover {

@@ -13,7 +13,8 @@ export default function UserAdmin() {
   const [busqueda, setBusqueda] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access");
+
 
     fetch("http://localhost:8000/api/users/", {
       method: "GET",
@@ -24,7 +25,11 @@ export default function UserAdmin() {
     })
       .then(res => res.json())
       .then(data => {
-        setUsuarios(data);
+        console.log("¿Es un array?", Array.isArray(data));
+        console.log("Tipo de data:", typeof data);
+        console.log("Contenido:", data);
+        
+        setUsuarios(Array.isArray(data) ? data : []);
       })
       .catch(err => {
         console.error("Error cargando usuarios:", err);

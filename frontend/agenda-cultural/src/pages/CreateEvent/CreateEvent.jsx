@@ -57,7 +57,7 @@ export default function CreateEvent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access');
 
     const evento = {
       name: nombreEvento,
