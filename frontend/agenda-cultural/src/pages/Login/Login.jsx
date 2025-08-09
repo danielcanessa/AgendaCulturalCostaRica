@@ -51,8 +51,9 @@ export default function Login() {
 
       const data = await res.json();
       // Guarda los tokens de sesión en localStorage
-      localStorage.setItem('token', data.access);
-      localStorage.setItem('token_refresh', data.refresh);
+      localStorage.setItem('access', data.access);
+      localStorage.setItem('refresh', data.refresh);
+
 
       // Guarda el usuario logueado en localStorage para uso global
       localStorage.setItem('usuario', JSON.stringify(data.user));

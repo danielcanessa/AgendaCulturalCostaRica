@@ -18,7 +18,7 @@ export default function EventAdmin() {
 
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('access');
 
 
   useEffect(() => {

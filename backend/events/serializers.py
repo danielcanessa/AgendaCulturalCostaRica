@@ -402,7 +402,8 @@ class UserEventSerializer(serializers.ModelSerializer):
     - Uses event_id for input (POST/PUT) for easier frontend usage.
     """
 
-    event = EventLeanSerializer(read_only=True)
+    event = EventSerializer(read_only=True)
+
     event_id = serializers.PrimaryKeyRelatedField(
         source='event', queryset=Event.objects.all(), write_only=True
     )

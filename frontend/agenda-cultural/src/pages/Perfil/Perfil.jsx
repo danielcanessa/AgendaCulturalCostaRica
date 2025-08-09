@@ -20,7 +20,7 @@ export default function Perfil() {
   const [menusVisibles, setMenusVisibles] = useState({});
   const [menusOrgs, setMenusOrgs] = useState({});
   const usuarioActual = getUsuarioActual();
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('access');
 
   const esMiPerfil = Number(id) === Number(usuarioActual.id); // <- importante para saber si mostrar botones
 
