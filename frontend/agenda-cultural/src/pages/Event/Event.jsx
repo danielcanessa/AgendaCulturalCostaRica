@@ -34,7 +34,11 @@ export default function Event() {
     fetchEvento();
   }, [id]);
 
-  const esAutor = correo === evento?.correoAutor;
+
+const emailEvent = (evento?.created_by?.email ?? "").trim().toLowerCase();
+const emailUser = (correo ?? "").trim().toLowerCase();
+const esAutor = !!emailUser && !!emailEvent && emailUser === emailEvent;
+
 
   if (cargando) {
     return (
@@ -96,32 +100,60 @@ export default function Event() {
             referrerPolicy="no-referrer-when-downgrade"
           ></iframe>
 
-          {tipoUsuario === 'usuario' && (
+          {(tipoUsuario === 'usuario' || esAutor) && (
             <div className="botones-event">
-              <button
-                className="btn-agenda"
-                onClick={async () => {
-                  const token = localStorage.getItem("access");
-                  const result = await agregarEventoAgendaBackend(evento.id, token);
-                  if (result) {
-                    alert("Evento añadido a tu agenda");
-                  } else {
-                    alert("Hubo un error al guardar el evento");
-                  }
-                }}
-              >
-                Añadir a mi agenda
-              </button>
-              {esAutor && (
+              {tipoUsuario === 'usuario' && (
                 <button
-                  className="btn-editar"
-                  onClick={() => navigate(`/editar-evento/${evento.id}`)}
+                  className="btn-agenda"
+                  onClick={async () => {
+                    const token = localStorage.getItem("access");
+                    const result = await agregarEventoAgendaBackend(evento.id, token);
+                    alert(result ? "Evento añadido a tu agenda" : "Hubo un error al guardar el evento");
+                  }}
                 >
-                  Editar evento
+                  Añadir a mi agenda
                 </button>
               )}
+              {esAutor && (
+  <div className="botones-event">
+    <button
+      className="btn-editar"
+      onClick={() => navigate(`/editar-evento/${evento.id}`)}
+    >
+      Editar evento
+    </button>
+    <button
+      className="btn-eliminar"
+      onClick={async () => {
+        if (window.confirm("¿Estás seguro de eliminar este evento? Esta acción no se puede deshacer.")) {
+          try {
+            const token = localStorage.getItem("access");
+            const resp = await fetch(`http://localhost:8000/api/events/${evento.id}/`, {
+              method: "DELETE",
+              headers: {
+                "Authorization": `Bearer ${token}`
+              }
+            });
+            if (resp.ok) {
+              alert("Evento eliminado con éxito");
+              navigate("/"); // redirige después de borrar
+            } else {
+              alert("Hubo un error al eliminar el evento");
+            }
+          } catch (error) {
+            console.error("Error al eliminar el evento:", error);
+            alert("No se pudo eliminar el evento");
+          }
+        }
+      }}
+    >
+      Eliminar evento
+    </button>
+  </div>
+)}
             </div>
           )}
+
 
           {mostrarSolicitudCambios && (
             <div className="solicitud-cambios">
