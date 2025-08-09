@@ -1,13 +1,27 @@
+# **Public description**
+Agenda Cultural Costa Rica is an open-source platform (MIT licensed) for municipalities, NGOs, and organizations to promote and manage cultural events. It features a public REST API that can be reused in other applications and services.
+
+This project is open-source and free to use under the MIT License. You may use, modify, and distribute it for any purpose. We kindly ask that you let us know if you do.
+
+## About the Project
+Agenda Cultural Costa Rica aims to provide a centralized catalog of cultural events across the country, ensuring that accessibility data is prioritized and integrated into event information. The platform empowers municipalities, NGOs, and cultural organizations to democratically publish and manage events. It also offers an open REST API that can be reused by other applications and services to foster cultural engagement and collaboration.
+
 # AgendaCulturalCostaRica
 
 Agenda Cultural Costa Rica is a web application designed to promote and organize cultural events throughout Costa Rica. It allows event organizers to publish events, visitors to discover and bookmark them, and registered users to participate through comments and ratings.
 
 This project is developed as part of the **Software Design course** at CENFOTEC, to apply best practices in full-stack web development, system architecture, and usability/accessibility design.
 
+## Objectives
+- Unify scattered cultural event information into a single accessible platform.
+- Provide detailed accessibility metadata for each event to support inclusive participation.
+- Enable democratic publishing of events by municipalities, NGOs, and organizations.
+- Offer a public, open REST API for reuse by external applications and services.
+
 ## Tech Stack
-- **Frontend**: ReactJS
-- **Backend**: Django + Django REST Framework
-- **Database**: MySQL
+- **Frontend**: React 19.1.0
+- **Backend**: Django 4.2.14 + Django REST Framework 3.16.0
+- **Database**: MySQL 9.3.0
 
 ## Features
 - Public event listings with filters
@@ -16,6 +30,36 @@ This project is developed as part of the **Software Design course** at CENFOTEC,
 - Personalized "User Events" section
 - Event comments and rating system
 - Admin interface for managing users and content
+
+## MVP Use Cases
+- As a visitor, I want to browse cultural events by category and location.
+- As an organizer, I want to publish new cultural events with detailed accessibility information.
+- As a registered user, I want to bookmark events to create my personal agenda.
+- As a visitor, I want to filter events based on accessibility features.
+- As an organizer, I want to manage and update the events I have published.
+- As a registered user, I want to comment on and rate events I have attended.
+
+## Is / Is Not
+
+- **Is:**
+  - A centralized cultural event catalog.
+  - Accessibility-first by design.
+  - A platform for democratic event publishing.
+  - An open REST API for reuse by municipalities and NGOs.
+
+- **Is Not:**
+  - A ticketing or payment platform.
+  - A social media network.
+  - A proprietary closed system.
+  - A replacement for official government websites.
+
+## User Roles Overview
+
+| Role          | Allowed Actions                                                                                     |
+|---------------|---------------------------------------------------------------------------------------------------|
+| Administrator | Manage users, organizations, categories, accessibility features, and all event content.            |
+| Visitor       | Browse public events, view event details, and read comments and ratings without authentication.   |
+| Organizer     | Publish, update, and manage their own events, including adding accessibility metadata and comments.|
 
 ## Backend API
 
@@ -88,6 +132,12 @@ You can use filters as query parameters, e.g. `/events/?category=2&is_event_appr
 - All endpoints (except `/login/`, `/register/`, `/refresh/`) require JWT authentication unless marked as "Public".
 - Some write/delete actions require admin or object creator privileges.
 
+## Architecture Diagram
+
+Below is the high-level system architecture for Agenda Cultural Costa Rica:
+
+![Architecture Diagram](docs/architecture-diagram.png)
+
 ## Development Setup (Automatic)
 
 ### 1. Clone the repository
@@ -105,6 +155,8 @@ This command will:
 * Install backend dependencies
 * Apply Django migrations
 * Start the Django development server
+
+> **Note:** The setup scripts work on both Linux and macOS.
 
 > Replace `mysqlpassword` with your actual MySQL root password.
 
@@ -294,7 +346,7 @@ You should see the list of records (empty if no data yet).
 
 ## Frontend Setup (Manual)
 
-From the `frontend/` folder:
+From the `frontend/` folder (React SPA with WCAG 2.1 AA accessibility compliance):
 
 ```bash
 cd frontend
@@ -302,10 +354,22 @@ npm install
 npm start
 ```
 
+The frontend is a Single Page Application (SPA) built with React 19.1.0. It features modular, reusable components and client-side routing to provide a smooth user experience. Users can filter events, paginate through results, and benefit from integrated accessibility features to ensure inclusivity.
+
 The frontend will run at [http://localhost:3000](http://localhost:3000) and interact with the backend API.
+
+## Accessibility
+
+The platform complies with WCAG 2.1 Level AA standards, ensuring accessibility for all users. It includes support for high contrast mode, full keyboard navigation, and the use of alternative text for images and icons to improve usability for people with disabilities.
+
+## Security Overview
+
+The backend uses JWT authentication with access and refresh tokens to securely manage user sessions. Role-based access control enforces permissions according to user roles such as Administrator, Organizer, and Visitor. All endpoints validate permissions to protect data and functionality from unauthorized access.
 
 ## Notes
 
 * Make sure you have MySQL installed and running.
 * Python version: 3.10 or later is recommended.
 * Node.js v18+ is recommended for the frontend.
+* Both backend and frontend setup scripts are compatible with Linux and macOS.
+* The only OS-specific dependency is the MySQL installation and configuration.
